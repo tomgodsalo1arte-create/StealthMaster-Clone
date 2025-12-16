@@ -102,6 +102,7 @@ public class EnemyAlertState : IState
 
     private void StartWandering()
     {
+        _enemy.Animator.Play("Walking");
         _walkingToLastKnown = false;
         _wanderingAround = true;
 

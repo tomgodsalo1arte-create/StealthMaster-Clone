@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public class CCTVCam : MonoBehaviour
 {
-    [SerializeField] private FieldOfView fieldOfView;
+    /*[SerializeField]*/ private FieldOfView fieldOfView;
     public GameController controller;
     private bool isTurnedOff =false;
     private bool isSeen = false;
@@ -52,11 +52,11 @@ public class CCTVCam : MonoBehaviour
         //if (isTurnedOff)
         //    return;
 
-        FieldOfViewHandle();
+      /*  FieldOfViewHandle();*/
 
         RotateCam();
     }
-    private void FieldOfViewHandle()
+    /*private void FieldOfViewHandle()
     {
         //Debug.Log("CCTV scene");
         fieldOfView.SetAimDirection(transform.forward);
@@ -64,7 +64,7 @@ public class CCTVCam : MonoBehaviour
         fieldOfView.SetAimDirection(transform.forward);
 
 
-    }
+    }*/
     public void RotateCam()
     {
          if (_pauseTimer > 0f)
@@ -107,7 +107,27 @@ public class CCTVCam : MonoBehaviour
         // Optional: make CCTV cone red
         fieldOfView.SetAlert(true);
     }
+    //For CCTV cam--------------------------------------------------------------------------------------
+    public void OnPlayerEnteredSpotlight(Transform player)
+    {
+        Debug.Log("Player entered CCTV spotlight");
 
+        if (GameController.Instance != null)
+        {
+            GameController.Instance.ForceAllEnemiesToChase(player.position);
+        }
+
+        // Visual feedback
+      //  fieldOfView.SetAlert(true);
+    }
+
+    public void OnPlayerExitedSpotlight()
+    {
+        Debug.Log("Player exited CCTV spotlight");
+
+       // fieldOfView.SetAlert(false);
+    }
+    //End For CCTV cam--------------------------------------------------------------------------------------
     private void OnPlayerLost()
     {
         Debug.Log("Exiting field");

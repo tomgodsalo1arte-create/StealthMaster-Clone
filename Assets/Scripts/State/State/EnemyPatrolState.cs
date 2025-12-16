@@ -64,6 +64,8 @@ public class EnemyPatrolState : IState
             _waitTimer += Time.deltaTime;
             if (_waitTimer >= WaitAtPointTime)
             {
+                // _enemy.Animator.Play("Idle");
+                _enemy.Animator.Play("Walking");
                 _waitTimer = 0f;
                LookAround();
                 // Move to another random waypoint (different to current)

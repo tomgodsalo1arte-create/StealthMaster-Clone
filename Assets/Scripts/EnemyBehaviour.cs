@@ -47,6 +47,9 @@ public class EnemyBehaviour : CharacterBaseScript
     [SerializeField] private AudioClip deathClip;
     private bool isInAlert = false;
 
+    [Header("PowerUp")]
+    [SerializeField] private float distractionTime = 5f;
+    [SerializeField] private float coolDDnTime = 5f;
     private PlayerBehaviour player;
     private NavMeshAgent agent ;
      StateMachine _stateMachine ;

@@ -58,8 +58,9 @@ public class FieldOfView : MonoBehaviour
 
         if (isCCTV)
         {
+            DrawFOV();
             DetectCCTV();
-            DrawSpotlight();
+           
         }
         else
         {
@@ -87,7 +88,7 @@ public class FieldOfView : MonoBehaviour
         }
 
         // 3️⃣ Raycast STRAIGHT forward from origin
-        if (Physics.Raycast(origin, transform.forward, out RaycastHit hit, viewDistance, detectionMask))
+        if (Physics.Raycast(origin, forward, out RaycastHit hit, viewDistance, detectionMask))
         {
             Debug.DrawRay(origin, forward * viewDistance, Color.red);
 
@@ -192,55 +193,7 @@ public class FieldOfView : MonoBehaviour
         mesh.vertices = vertices;
         mesh.triangles = triangles;
     }
-    private void DrawSpotlight()
-    {
-        // Position at the end of the FOV
-        Vector3 forward = transform.forward;
-        Vector3 center = origin + forward * viewDistance;
-
-        // Project onto ground
-        center.y = origin.y + groundOffset;
-
-        Vector3[] vertices = new Vector3[spotlightSegments + 1];
-        int[] triangles = new int[spotlightSegments * 3];
-
-        vertices[0] = center; // center of the circle
-
-        float angleStep = 360f / spotlightSegments;
-
-        for (int i = 0; i < spotlightSegments; i++)
-        {
-            float angle = angleStep * i * Mathf.Deg2Rad;
-
-            Vector3 offset = new Vector3(
-                Mathf.Cos(angle),
-                0,
-                Mathf.Sin(angle)
-            ) * spotlightRadius;
-
-            vertices[i + 1] = center + offset;
-
-            // Build triangles
-            if (i < spotlightSegments - 1)
-            {
-                triangles[i * 3] = 0;
-                triangles[i * 3 + 1] = i + 1;
-                triangles[i * 3 + 2] = i + 2;
-            }
-            else
-            {
-                // close the circle
-                triangles[i * 3] = 0;
-                triangles[i * 3 + 1] = i + 1;
-                triangles[i * 3 + 2] = 1;
-            }
-        }
-
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-    }
-
+   
     private Vector3 GetVectorFromAngle(float angle)
     {
         float rad = angle * Mathf.Deg2Rad;

@@ -1,5 +1,4 @@
 using Assets.Scripts.State;
-using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -19,6 +18,7 @@ public class EnemyAttackState : IState
     }
     public void Enter()
     {
+        Debug.Log("Enter AttackState");
         if (_enemy.IsDead) return;
 
         // Face the player
@@ -32,7 +32,7 @@ public class EnemyAttackState : IState
             //_enemy.LastKnownPlayerPosition = playerPos;
         }
 
-        // Do the attack (your existing method)
+        // Do the attack 
         _enemy.Attack();
 
         // Make sure we're in alert mode (red cone, global alert once)
@@ -57,14 +57,12 @@ public class EnemyAttackState : IState
             Vector3 flat = new Vector3(playerPos.x, _enemy.transform.position.y, playerPos.z);
             _enemy.transform.LookAt(flat);
         }
-
-        // You can add logic here later:
-        // - if player far -> _machine.SetState(_chaseState);
-        // - if cooldown finished & still in range -> Attack() again, etc.
+        _enemy.Attack();
+       
     }
 
     public void Exit()
     {
-        // Nothing special for now
+        // exit f
     }
 }
