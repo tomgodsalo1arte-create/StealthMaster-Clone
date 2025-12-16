@@ -21,12 +21,111 @@ public class GameController : MonoBehaviour
     int levelIndex = 0;
     LevelScript currentLevel;
 
+    [Header("Music")]
+    [SerializeField] private AudioSource backgroundMusic;  // normal BGM
+    [SerializeField] private AudioSource alertMusic;       // tense/alert music
+    [SerializeField] private float musicFadeTime = 0.5f;
+
+    private bool inAlertState = false;
+    private Coroutine musicFadeRoutine;
+
+    [SerializeField] public List<EnemyBehaviour> enemies = new List<EnemyBehaviour>();
+
     private void Start()
     {
         Instance = this;
         GetLevel();
+
+        // Make sure initial music state is correct
+        if (backgroundMusic != null)
+        {
+            backgroundMusic.loop = true;
+            if (!backgroundMusic.isPlaying)
+                backgroundMusic.Play();
+        }
+
+        if (alertMusic != null)
+        {
+            alertMusic.loop = true;
+            alertMusic.volume = 0f;  // start silent
+            if (!alertMusic.isPlaying)
+                alertMusic.Play();
+        }
     }
 
+    // Called by enemies when they spot the player
+    public void EnterAlertState()
+    {
+        SetAlertState(true);
+    }
+
+    // Called by enemies when they calm down
+    public void ExitAlertState()
+    {
+        SetAlertState(false);
+    }
+
+    private void SetAlertState(bool alert)
+    {
+        if (inAlertState == alert)
+            return;
+
+        inAlertState = alert;
+
+        if (musicFadeRoutine != null)
+            StopCoroutine(musicFadeRoutine);
+
+        musicFadeRoutine = StartCoroutine(FadeMusic(alert));
+    }
+    public void ForceAllEnemiesToChase(Vector3 playerPosition)
+    {
+        foreach (var enemy in enemies)
+        {
+            if (enemy != null && !enemy.IsDead)
+            {
+                enemy.ForceChase(playerPosition);
+            }
+        }
+    }
+
+    private IEnumerator FadeMusic(bool toAlert)
+    {
+        if (backgroundMusic == null || alertMusic == null)
+            yield break;
+
+        float fadeTime = musicFadeTime;
+
+        float bgStart = backgroundMusic.volume;
+        float alertStart = alertMusic.volume;
+
+        float bgTarget = toAlert ? 0.3f : 1f;
+        float alertTarget = toAlert ? 1f : 0f;
+
+        // --- Fade In or Out ---
+        float t = 0f;
+        while (t < fadeTime)
+        {
+            t += Time.deltaTime;
+            float lerp = t / fadeTime;
+
+            backgroundMusic.volume = Mathf.Lerp(bgStart, bgTarget, lerp);
+            alertMusic.volume = Mathf.Lerp(alertStart, alertTarget, lerp);
+
+            yield return null;
+        }
+
+        backgroundMusic.volume = bgTarget;
+        alertMusic.volume = alertTarget;
+
+        // --- If we just entered alert mode → stay there for 10 seconds ---
+        if (toAlert)
+        {
+            yield return new WaitForSeconds(10f);
+
+            // fade back after 10 sec
+            StartCoroutine(FadeMusic(false));
+        }
+    }
     void SaveProgress()
     {
 
@@ -81,11 +180,26 @@ public class GameController : MonoBehaviour
             });
         });
     }
-
     void GetLevel()
     {
-        currentLevel = Instantiate(levelList[levelIndex], levelList[levelIndex].transform.position, Quaternion.identity);
+        currentLevel = Instantiate(
+            levelList[levelIndex],
+            levelList[levelIndex].transform.position,
+            Quaternion.identity
+        );
+
+        // Clear old enemies (important when restarting / next level)
+        enemies.Clear();
+
+        // Find all EnemyBehaviour components in the level
+        EnemyBehaviour[] foundEnemies =
+            currentLevel.GetComponentsInChildren<EnemyBehaviour>(true);
+
+        enemies.AddRange(foundEnemies);
+
+       // Debug.Log($"Enemies found in level: {enemies.Count}");
     }
+
 
     public void GameOver()
     {

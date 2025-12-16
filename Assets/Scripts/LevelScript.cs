@@ -12,7 +12,7 @@ public class LevelScript : MonoBehaviour
     public void DisableAllEnemies()
     {
         gameObject.SetActive(false);
-        enemies.ForEach(enemy => enemy.DisableTweens());
+      //  enemies.ForEach(enemy => enemy.DisableTweens());
         Destroy(gameObject,1.5f);
     }
 

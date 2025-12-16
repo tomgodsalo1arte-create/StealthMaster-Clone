@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 216f2c16b012f3a4b8b7d91b7ffa964a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 220011
+  packageName: 3D Voxel Model - Ninja Character
+  packageVersion: 1.2
+  assetPath: Assets/Ninja Character/Demo/Ninja_Controller.controller
+  uploadId: 709076

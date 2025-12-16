@@ -1,6 +1,8 @@
-﻿using System;
+﻿using EZCameraShake;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -27,10 +29,6 @@ public class EnemyBehaviour : CharacterBaseScript
     [SerializeField] private GameObject shuriken = default;
     [SerializeField] private float throwSpeed = default;
 
-    private LTDescr ChasePlayerLTD;
-    private LTDescr MoveNextPointLTD;
-    private LTDescr LookAroundLTD;
-
     private RaycastHit hit;
 
     private bool isDead = false;
@@ -38,11 +36,92 @@ public class EnemyBehaviour : CharacterBaseScript
     private int previousIndex;
 
     [SerializeField] private Animation anim;
+    [SerializeField] private Animator animtor = null;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    public AudioSource AudioSource => audioSource;
+    [SerializeField] private AudioClip spottedClip;
+    [SerializeField] private AudioClip gotHitClip;
+    [SerializeField] private AudioClip throwClip;
+    [SerializeField] private AudioClip deathClip;
+    private bool isInAlert = false;
+
+    private PlayerBehaviour player;
+    private NavMeshAgent agent ;
+     StateMachine _stateMachine ;
+
+    // We'll keep references to states so we don't keep "new"ing them.
+    private EnemyPatrolState _patrolState;
+    private EnemyAttackState _attackState;
+    private EnemyAlertState _alertState;
+    private EnemyChaseState _chaseState;
+    private EnemyDeadState  _deadState;
+    private EnemyDistractedState  _distractedState;
+
+
+    public int WaypointCount => waypointList?.Count ?? 0;
+
+    public Vector3 GetWaypointPosition(int index)
+    {
+        if (waypointList == null || index < 0 || index >= waypointList.Count)
+            return transform.position;
+        return waypointList[index].transform.position;
+    }
+
+    // Optionally expose patrol speed, anims, and death flag:
+    public float PatrolSpeed = 1.5f;  // tune this in inspector if you like
+
+    [Header("Alert / Hunt Settings")]
+    [SerializeField] private float alertStandTime = 1f;   // stand still after losing sight
+    [SerializeField] private float maxHuntTime = 10f;     // how long to hunt
+    [SerializeField] private float alertWalkSpeed = 2f;   // “alert walk” speed
+
+    private Vector3 originalPosition;
+
+    public bool IsDead { get => isDead; set => isDead = value; }
+    public Vector3 OriginalPosition => originalPosition;
+    public bool IsInAlert
+    {
+        get => isInAlert;
+        set => isInAlert = value;
+    }
+    public FieldOfView FieldOfView => fieldOfView;
+
+    public Vector3 LastKnownPlayerPosition { get; set; }
+
+    public float AlertStandTime => alertStandTime;
+    public float MaxHuntTime => maxHuntTime;
+    public float AlertWalkSpeed => alertWalkSpeed;
+    public Animator Animator => animtor;
+
+
+    private void OnEnable()
+    {
+        if (fieldOfView != null)
+        {
+            fieldOfView.OnTargetSeen += PlayerSeen;
+            fieldOfView.OnTargetLost += OnPlayerLost;
+        }
+    }
+    private void OnDisable()
+    {
+        if (fieldOfView != null)
+        {
+            fieldOfView.OnTargetSeen -= PlayerSeen;
+            fieldOfView.OnTargetLost -= OnPlayerLost;
+        }
+    }
     private void Awake()
     {
+
+        agent  = GetComponent<NavMeshAgent>();
         rigidBody = GetComponent<Rigidbody>();
 
+        _stateMachine = new StateMachine();
+        // state Instences
+      
+        //Adding Waypoints to the list
         waypointList = new List<GameObject>();
         if (waypoints.transform.childCount > 0)
         {
@@ -52,37 +131,37 @@ public class EnemyBehaviour : CharacterBaseScript
                 waypointList.Add(waypoints.transform.GetChild(i).gameObject);
             }
         }
-        anim.Play("AttackIdle");
-        StartCoroutine(EnemyAI());
-    }
+        _patrolState = new EnemyPatrolState(this, _stateMachine, agent);
+        _chaseState = new EnemyChaseState(this, _stateMachine, agent);
+        _attackState = new EnemyAttackState(this, _stateMachine, agent);
+        _deadState = new EnemyDeadState(this, _stateMachine, agent);
+        _alertState = new EnemyAlertState(this, _stateMachine, agent);
+        _distractedState = new EnemyDistractedState(this, _stateMachine, agent);
 
+        //anim.Play("AttackIdle");
+        //animtor.Play("Idle");
+      // StartCoroutine(EnemyAI()); // set in patrolState ----------------------------------------------------  Done
+    }
+    private void Start()
+    {
+        _stateMachine.Initialize(_patrolState);
+    }
     private void Update()
     {
+        _stateMachine.Update();
+
         if (isDead)
-        {
             return;
-        }
 
         FieldOfViewHandle();
 
-        if (Vector3.Angle(transform.forward, (playerPos - transform.position).normalized) < fieldOfView.fov / 2f)
-        {
-            playerPos = PlayerBehaviour.Instance.transform.position;
-            if (Physics.Raycast(transform.position, playerPos - transform.position, out hit, fieldOfView.viewDistance, layerMask))
-            {
-                if (hit.collider.CompareTag("Player"))
-                {
-                    PlayerSeen();
-                    DisableTweens();
-                }
-            }
+      
+    }
 
-            else if (isSeen)
-            {
-                ChasePlayer();
-                isSeen = false;
-            }
-        }
+    private void FoundDeadEnemy(Transform transform)
+    {
+        Debug.Log("(hit.collider.CompareTag(\"Dead\")--Inside FoundDeadEnemy");
+        SwitchToPatrolFromAlert();
     }
 
     private void FieldOfViewHandle()
@@ -90,141 +169,80 @@ public class EnemyBehaviour : CharacterBaseScript
         fieldOfView.SetAimDirection(transform.forward);
         fieldOfView.SetOrigin(transform.position + new Vector3(0, 0.1f, 0));
     }
-
-    private void LookAround()
+    public void SwitchToPatrolFromAlert()
     {
-        float angle = Random.Range(0, 2) == 0 ? -45 : 45;
-        LookAroundLTD = LeanTween.rotateAround(gameObject, Vector3.up, angle, 1f).setOnComplete(() => 
+        if (isInAlert && GameController.Instance != null)
         {
-            LeanTween.delayedCall(0.5f,() =>
-            {
-                LeanTween.rotateAround(gameObject, Vector3.up, -angle * 2, 1f).setOnComplete(() => 
-                {
-                    if (!isDead)
-                    {
-                        StartCoroutine(EnemyAI());
-                    }
-                });
-            });
-        });
-    }
+            GameController.Instance.ExitAlertState();
+            isInAlert = false;
 
-    private void MoveToNextPoint()
-    {
-        while (waypointIndex == previousIndex)
-        {
-            waypointIndex = Random.Range(0, waypointList.Count);
-        }
-        transform.LookAt(waypointList[waypointIndex].transform.position);
-        anim.Play("Run");
-        MoveNextPointLTD = transform.LeanMove(waypointList[waypointIndex].transform.position, 2f).setOnComplete(() =>
-        {
-            if (!isDead)
-            {
-                StartCoroutine(EnemyAI());
-            }
-            previousIndex = waypointIndex;
-            anim.Play("AttackIdle");
-        });
-    }
-
-    private IEnumerator EnemyAI()
-    {
-        yield return new WaitForSeconds(1f);
-        float choosedAction = Random.Range(0, 2);
-
-        if(choosedAction == 0 && patrolling && !isDead)
-        {
-            MoveToNextPoint();
+            fieldOfView.SetAlert(false); // switch cone to white
         }
 
-        else
-        {
-            LookAround();
-        }
+        _stateMachine.TransitionTo(_patrolState);
     }
 
-    private void PlayerSeen()
-    {
-        transform.LookAt(new Vector3(playerPos.x, transform.position.y, playerPos.z));
-        Attack();
+    public void PlayerSeen(Transform trans)
+    {   
         isSeen = true;
-    }
-
-    private void ChasePlayer()
-    {
         
-        if (latestPosition == Vector3.zero)
-        {
-            latestPosition = transform.position;
-        }
+        // Store last known position for alert/hunt logic
+        LastKnownPlayerPosition = trans.position;
 
-        ChasePlayerLTD = LeanTween.delayedCall(gameObject, 1f, () =>
-        {
-            transform.LookAt(playerPos);
-            anim.Play("Run");
-            LeanTween.move(gameObject, playerPos, 3f).setOnComplete(() =>
-            {
-                anim.Play("AttackIdle");
-                LeanTween.delayedCall(gameObject, 1f, () =>
-                {
-                    transform.LookAt(latestPosition);
-                    LeanTween.move(gameObject, latestPosition, 3f).setOnComplete(() =>
-                    {
-                        if (!isDead)
-                        {
-                            StartCoroutine(EnemyAI());
-                        }
-                    });
-                });
-            });
-        });
+        // Go into Attack state – it will handle LookAt, Attack, and alert visuals
+       _stateMachine.TransitionTo(_attackState);
+        
     }
-
+    private void OnPlayerLost()
+    {
+        if (isDead) return;
+        isSeen = false;
+        _stateMachine.TransitionTo(_chaseState);
+    }
+   
     public void Died()
     {
+        if (isDead) return;
+
         isDead = true;
-        anim.Play("Death");
-        transform.tag = "Dead";
-        fieldOfView.gameObject.SetActive(false);
+        _stateMachine.TransitionTo(_deadState);
     }
-
-    public void DisableTweens()
+    public void ForceChase(Vector3 playerPosition)
     {
-        if (LookAroundLTD != null)
+        if (IsDead) return;
+
+        LastKnownPlayerPosition = playerPosition;
+
+        // Enter global alert once
+        if (!IsInAlert && GameController.Instance != null)
         {
-            LeanTween.cancel(LookAroundLTD.id);
+            GameController.Instance.EnterAlertState();
+            IsInAlert = true;
+            FieldOfView.SetAlert(true);
         }
 
-        if (patrolling)
-        {
-            StopCoroutine(EnemyAI());
-
-            if (MoveNextPointLTD != null)
-            {
-                LeanTween.cancel(MoveNextPointLTD.id);
-            }
-        }
-
-        if (ChasePlayerLTD != null)
-        {
-            LeanTween.cancel(ChasePlayerLTD.id);
-        }
+        _stateMachine.TransitionTo(_alertState); 
+        //  _stateMachine.TransitionTo(_chaseState);
+      
     }
-
-    private void Attack()
+    public void Attack()
     {
         if (!_isCooldown)
         {
-            anim.Play("D_Attack");
+            animtor.Play("Attack");
+
+            if (audioSource != null && throwClip != null)
+                audioSource.PlayOneShot(throwClip);
+            if (audioSource != null && gotHitClip != null)
+                audioSource.PlayOneShot(gotHitClip);
+
             EnemyProjectile spawnedShuriken = Instantiate(shuriken, new Vector3(transform.position.x, 1f, transform.position.z), Quaternion.identity).GetComponent<EnemyProjectile>();
             spawnedShuriken.player = PlayerBehaviour.Instance.transform;
             spawnedShuriken.speed = throwSpeed;
             StartCoroutine(AttackCooldown());
         }
     }
-
-    private IEnumerator AttackCooldown()
+    public IEnumerator AttackCooldown()
     {
         _isCooldown = true;
         yield return new WaitForSeconds(cooldownTime);
