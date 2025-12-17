@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts.State;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,16 +7,16 @@ public class EnemyDistractedState : IState
     private EnemyBehaviour _enemy;
     private StateMachine _machine;
     private NavMeshAgent _agent;
-    private float _wanderTimer;
+
+    private float powerupTimer;
+    //private const float PowerUpDuration = 15f;
+
     private bool _walkingToLastKnown;
     private bool _wanderingAround;
     private bool _returningHome;
-
-
-    private float _lookAwayTimer;
-    private const float LookAwayDuration = 15f;
+  
     private Vector3 _lookAwayDirection;
-    private bool _isLookingAway;
+
 
     public EnemyDistractedState(EnemyBehaviour enemy, StateMachine machine, NavMeshAgent agent)
     {
@@ -29,102 +28,106 @@ public class EnemyDistractedState : IState
     {
         UnityEngine.Debug.Log("Entering Distraction State");
        
+       StartWandering();
     }
 
     public void Update()
     {
-
-        //// 2. Walking to last known player position
-        //if (_walkingToLastKnown)
-        //{
-        //    if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.05f)
-        //    {
-        //        StartWandering();
-        //    }
-        //    return;
-        //}
+      //-----------------WANTERING STARTS HERE-----------------------------------------------------------------
         if (_wanderingAround)
         {
-            _wanderTimer += Time.deltaTime;
+            powerupTimer += Time.deltaTime;
 
-            // --------------------------------
-            // LOOK AWAY LOGIC
-            // --------------------------------
-            if (_isLookingAway)
+            // FORCE look away from player (always)
+            ForceLookAway();
+            GameController.Instance.ForceAllCamToBeDesabled();
+
+            // Wander ends after 15 seconds
+            if (powerupTimer >= GameController.Instance.DistractedDuration)
             {
-                _lookAwayTimer += Time.deltaTime;
-
-                if (_lookAwayTimer <= LookAwayDuration)
-                {
-                    RotateAwayFromPlayer();
-                }
-                else
-                {
-                    _isLookingAway = false; // stop forced rotation
-                }
-            }
-            // --------------------------------
-
-            if (_wanderTimer >= _enemy.MaxHuntTime)
-            {
+                UnityEngine.Debug.Log("powerupTimer >= GameController.Instance.DistractedDuration Passed on thime===>>" + powerupTimer);
                 StartReturningHome();
+                
                 return;
             }
 
+            // Pick a new random point when reached
             if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.05f)
             {
                 SetRandomWanderPoint();
             }
+
             return;
         }
+        if (_returningHome)
+        {
+            // Wait until agent reaches destination
+            if (!_agent.pathPending &&
+                _agent.remainingDistance <= _agent.stoppingDistance + 0.05f)
+            {
+                //_machine.TransitionTo(_enemy.PatrolState);
+                _enemy.SwitchToPatrolFromAlert();
+            }
+        }
     }
+
     public void Exit()
     {
         UnityEngine.Debug.Log("Exiting Alert");
         _agent.ResetPath();
         _agent.isStopped = true;
+        // Re-enable normal rotation for other states
+        _agent.updateRotation = true;
 
         _enemy.Animator.Play("Idle");
+        //---------------------------------------------
+        foreach(var cam in GameController.Instance.camsInLevel)
+        {
+            if(GameController.Instance.camsInLevel.Count != 0)
+            {
+                cam.enabled = true;
+                Debug.Log("  cam.enabled = true;");
+                cam.Spotlight.SpotlightToNormal();
+            }
+        }
     }
-    // ===========================================================
+    // ============================================================
     // HELPER METHODS
-    // ===========================================================
-    private void RotateAwayFromPlayer()
+    // ==========================================================
+    private void ForceLookAway()
     {
-        if (_lookAwayDirection == Vector3.zero)
+        if (PlayerBehaviour.Instance == null)
             return;
 
-        Quaternion targetRotation = Quaternion.LookRotation(_lookAwayDirection);
+        Vector3 toPlayer = PlayerBehaviour.Instance.transform.position - _enemy.transform.position;
+        toPlayer.y = 0f;
+
+        if (toPlayer.sqrMagnitude < 0.01f)
+            return;
+
+        Vector3 lookAwayDir = -toPlayer.normalized;
+
+        Quaternion targetRotation = Quaternion.LookRotation(lookAwayDir);
+
         _enemy.transform.rotation = Quaternion.Slerp(
             _enemy.transform.rotation,
             targetRotation,
-            Time.deltaTime * 5f // rotation speed
+            Time.deltaTime * 8f
         );
     }
 
-
     private void StartWandering()
     {
-        _walkingToLastKnown = false;
         _wanderingAround = true;
+        _returningHome = false;
 
-        _wanderTimer = 0f;
+        powerupTimer = 0f;
 
-        // -------- LOOK AWAY SETUP --------
-        _lookAwayTimer = 0f;
-        _isLookingAway = true;
-
-        if (PlayerBehaviour.Instance != null)
-        {
-            Vector3 toPlayer = PlayerBehaviour.Instance.transform.position - _enemy.transform.position;
-            toPlayer.y = 0f;
-
-            // Opposite direction
-            _lookAwayDirection = -toPlayer.normalized;
-        }
-        // --------------------------------
+        // Disable NavMeshAgent rotation COMPLETELY
+        _agent.updateRotation = false;
 
         SetRandomWanderPoint();
+
         _enemy.Animator.Play("Walking");
     }
 
@@ -133,7 +136,6 @@ public class EnemyDistractedState : IState
     {
         Vector3 center = _enemy.transform.position;
         // Vector3 center = _enemy.LastKnownPlayerPosition; /---------------------- Enemys Comes to the player Detected spot
-
         // small random radius (1–5 meters)
         float radius = Random.Range(1f, 5f);
         float angle = Random.Range(0f, 360f);
