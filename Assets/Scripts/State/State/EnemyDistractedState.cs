@@ -13,6 +13,12 @@ public class EnemyDistractedState : IState
     private bool _wanderingAround;
     private bool _returningHome;
 
+
+    private float _lookAwayTimer;
+    private const float LookAwayDuration = 15f;
+    private Vector3 _lookAwayDirection;
+    private bool _isLookingAway;
+
     public EnemyDistractedState(EnemyBehaviour enemy, StateMachine machine, NavMeshAgent agent)
     {
         _enemy = enemy;
@@ -22,71 +28,54 @@ public class EnemyDistractedState : IState
     public void Enter()
     {
         UnityEngine.Debug.Log("Entering Distraction State");
-        if (_enemy.IsDead) return;
-        if (_enemy.IsDead) return;
-
-        _wanderTimer = 0f;
-
-        _walkingToLastKnown = true;
-        _wanderingAround = false;
-        _returningHome = false;
-        // _enemy.IsInAlert = true;
-
-        // Look toward the last known position
-        Vector3 lastPos = _enemy.transform.position;
-        // Vector3 lastPos = _enemy.LastKnownPlayerPosition; 
-
-        Vector3 flat = new Vector3(lastPos.x, _enemy.transform.position.y, lastPos.z);
-        _enemy.transform.LookAt(flat);
-
-        // Stand still
-        _agent.isStopped = true;
-        _agent.ResetPath();
-
-        // Idle anim
-        _enemy.Animator.Play("Idle");
+       
     }
 
     public void Update()
     {
 
-        // 2. Walking to last known player position
-        if (_walkingToLastKnown)
-        {
-            if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.05f)
-            {
-                StartWandering();
-            }
-            return;
-        }
-        // 3. Wandering around the last known location for 10 seconds
+        //// 2. Walking to last known player position
+        //if (_walkingToLastKnown)
+        //{
+        //    if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.05f)
+        //    {
+        //        StartWandering();
+        //    }
+        //    return;
+        //}
         if (_wanderingAround)
         {
             _wanderTimer += Time.deltaTime;
 
+            // --------------------------------
+            // LOOK AWAY LOGIC
+            // --------------------------------
+            if (_isLookingAway)
+            {
+                _lookAwayTimer += Time.deltaTime;
+
+                if (_lookAwayTimer <= LookAwayDuration)
+                {
+                    RotateAwayFromPlayer();
+                }
+                else
+                {
+                    _isLookingAway = false; // stop forced rotation
+                }
+            }
+            // --------------------------------
+
             if (_wanderTimer >= _enemy.MaxHuntTime)
             {
-                // Done wandering ? return home
                 StartReturningHome();
                 return;
             }
 
-            // If reached the small wander point, pick a new random one
             if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.05f)
             {
                 SetRandomWanderPoint();
             }
             return;
-        }
-        //  Debug.Log("Exiting_If reached the small wander point, pick a new random one------------------------------- Alert");
-        // 4. Going back home
-        if (_returningHome)
-        {
-            if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance + 0.05f)
-            {
-                //Debug.Log("_returningHome------------------------------- Alert");
-                _enemy.SwitchToPatrolFromAlert();
-            }
         }
     }
     public void Exit()
@@ -100,6 +89,18 @@ public class EnemyDistractedState : IState
     // ===========================================================
     // HELPER METHODS
     // ===========================================================
+    private void RotateAwayFromPlayer()
+    {
+        if (_lookAwayDirection == Vector3.zero)
+            return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(_lookAwayDirection);
+        _enemy.transform.rotation = Quaternion.Slerp(
+            _enemy.transform.rotation,
+            targetRotation,
+            Time.deltaTime * 5f // rotation speed
+        );
+    }
 
 
     private void StartWandering()
@@ -109,10 +110,24 @@ public class EnemyDistractedState : IState
 
         _wanderTimer = 0f;
 
-        SetRandomWanderPoint();
+        // -------- LOOK AWAY SETUP --------
+        _lookAwayTimer = 0f;
+        _isLookingAway = true;
 
+        if (PlayerBehaviour.Instance != null)
+        {
+            Vector3 toPlayer = PlayerBehaviour.Instance.transform.position - _enemy.transform.position;
+            toPlayer.y = 0f;
+
+            // Opposite direction
+            _lookAwayDirection = -toPlayer.normalized;
+        }
+        // --------------------------------
+
+        SetRandomWanderPoint();
         _enemy.Animator.Play("Walking");
     }
+
 
     private void SetRandomWanderPoint()
     {

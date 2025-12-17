@@ -52,7 +52,11 @@ public class GameController : MonoBehaviour
                 alertMusic.Play();
         }
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q)) ForceAllEnemysToBeDistracted();
 
+    }
     // Called by enemies when they spot the player
     public void EnterAlertState()
     {
@@ -87,7 +91,16 @@ public class GameController : MonoBehaviour
             }
         }
     }
-
+    public void ForceAllEnemysToBeDistracted()
+    {
+        foreach (var enemy in enemies)
+        {
+            if (enemy != null && !enemy.IsDead)
+            {
+                enemy.ForceDistracted();
+            }
+        }
+    }
     private IEnumerator FadeMusic(bool toAlert)
     {
         if (backgroundMusic == null || alertMusic == null)

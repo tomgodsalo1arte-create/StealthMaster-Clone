@@ -228,6 +228,7 @@ public class EnemyBehaviour : CharacterBaseScript
         //  _stateMachine.TransitionTo(_chaseState);
       
     }
+
     public void Attack()
     {
         if (!_isCooldown)
@@ -252,4 +253,8 @@ public class EnemyBehaviour : CharacterBaseScript
         _isCooldown = false;
     }
 
+    internal void ForceDistracted()
+    {
+        _stateMachine.TransitionTo(_distractedState);
+    }
 }
