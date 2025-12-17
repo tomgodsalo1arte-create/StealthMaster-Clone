@@ -24,7 +24,7 @@ public class CCTVSpotlightTrigger : MonoBehaviour
         if (!other.CompareTag("Player" ) )
             return;
 
-      
+        SpotlightToRed();
 
         // Notify CCTV
         cctv.OnPlayerEnteredSpotlight(other.transform);
