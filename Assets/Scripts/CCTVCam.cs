@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public class CCTVCam : MonoBehaviour
 {
-    [SerializeField] private FieldOfView fieldOfView;
+    /*[SerializeField]*/ private FieldOfView fieldOfView;
     public GameController controller;
     private bool isTurnedOff =false;
     private bool isSeen = false;
@@ -13,10 +13,12 @@ public class CCTVCam : MonoBehaviour
     // [SerializeField] private LayerMask layerMask = default;
 
     [Header("Cam Rotation")]
+    [SerializeField] private GameObject CamObject;
     [SerializeField] private float rotationAngle = 60f;   // total sweep angle
     [SerializeField] private float rotationSpeed = 30f;   // degrees per second
     [SerializeField] private float pauseTime = 0.5f;      // pause at ends
 
+    [SerializeField] public CCTVSpotlightTrigger Spotlight;
     private float _startY;
     private float _targetY;
     private float _pauseTimer;
@@ -42,29 +44,19 @@ public class CCTVCam : MonoBehaviour
          controller = GameController.Instance;
 
         //for cam rotation
-        _startY = transform.eulerAngles.y;
+        _startY = CamObject.transform.eulerAngles.y;
         _targetY = _startY + rotationAngle * 0.5f;
     }
 
     private void Update()
     {
-
-        //if (isTurnedOff)
-        //    return;
-
-        FieldOfViewHandle();
-
-        RotateCam();
+        if ((true))
+        {
+            RotateCam();
+        }
+      
     }
-    private void FieldOfViewHandle()
-    {
-        //Debug.Log("CCTV scene");
-        fieldOfView.SetAimDirection(transform.forward);
-        fieldOfView.SetOrigin(transform.position);
-        fieldOfView.SetAimDirection(transform.forward);
-
-
-    }
+ 
     public void RotateCam()
     {
          if (_pauseTimer > 0f)
@@ -73,7 +65,7 @@ public class CCTVCam : MonoBehaviour
             return;
         }
 
-        float currentY = transform.eulerAngles.y;
+        float currentY = CamObject.transform.eulerAngles.y;
         float step = rotationSpeed * Time.deltaTime * _direction;
 
         float nextY = currentY + step;
@@ -89,7 +81,7 @@ public class CCTVCam : MonoBehaviour
             _pauseTimer = pauseTime;
         }
 
-        transform.rotation = Quaternion.Euler(25f, nextY, 0f);
+        CamObject.transform.rotation = Quaternion.Euler(25f, nextY, 0f);
     
     }
     public void EnemysToAlert(Transform trans)
@@ -99,18 +91,58 @@ public class CCTVCam : MonoBehaviour
 
         isSeen = true;
 
-        if (GameController.Instance != null)
+        if (controller != null)
         {
-            GameController.Instance.ForceAllEnemiesToChase(trans.position);
+            controller.ForceAllEnemiesToChase(trans.position);
         }
 
         // Optional: make CCTV cone red
         fieldOfView.SetAlert(true);
     }
+    //For CCTV cam--------------------------------------------------------------------------------------
+    public void OnPlayerEnteredSpotlight(Transform player)
+    {
+        Debug.Log("Player entered CCTV spotlight");
 
+        if (controller != null)
+        {
+            controller.ForceAllEnemiesToChase(player.position);
+        }
+
+        // Visual feedback
+      //  fieldOfView.SetAlert(true);
+    }
+
+    public void OnPlayerExitedSpotlight()
+    {
+        Debug.Log("Player exited CCTV spotlight");
+
+       // fieldOfView.SetAlert(false);
+    }
+    //End For CCTV cam--------------------------------------------------------------------------------------
     private void OnPlayerLost()
     {
         Debug.Log("Exiting field");
     }
+    public void DeactivateCam()
+    {
+        // Read current Euler angles (degrees)
+        Vector3 currentEuler = CamObject.transform.eulerAngles;
 
+        // Force X to 90 degrees, keep Y and Z
+        CamObject.transform.rotation = Quaternion.Euler(
+            90f,
+            currentEuler.y,
+            currentEuler.z
+        );
+        Debug.Log("goona disable");
+        // Optional: stop rotation logic completely
+        enabled = false;
+
+        if (Spotlight != null)
+        {
+            Spotlight.SpotlightToDeactiveColor();
+        }
+    }
+ 
 }

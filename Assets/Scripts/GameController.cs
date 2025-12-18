@@ -26,16 +26,32 @@ public class GameController : MonoBehaviour
     [SerializeField] private AudioSource alertMusic;       // tense/alert music
     [SerializeField] private float musicFadeTime = 0.5f;
 
+    [SerializeField] public CCTVCam cctvcam;
     private bool inAlertState = false;
     private Coroutine musicFadeRoutine;
+    
+    /*[Header("PowerUp")]*/
 
-    [SerializeField] public List<EnemyBehaviour> enemies = new List<EnemyBehaviour>();
+     public List<EnemyBehaviour> enemies = new List<EnemyBehaviour>();
+     public List<CCTVCam> camsInLevel = new List<CCTVCam>();
 
-    private void Start()
+    private void Awake()
     {
         Instance = this;
         GetLevel();
+    }
 
+    [Header("Enemy PowerUp Settings in Sec")]
+    [SerializeField] private float distractedDuration = 15f;
+    [SerializeField] private float distractedCooldown = 120f;
+
+    public float DistractedDuration => distractedDuration;
+    public float DistractedCooldown => distractedCooldown;
+
+    private void Start()
+    {
+        
+        //cctvcam = Fi
         // Make sure initial music state is correct
         if (backgroundMusic != null)
         {
@@ -52,7 +68,15 @@ public class GameController : MonoBehaviour
                 alertMusic.Play();
         }
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+           // ForceAllCamToBeDesabled();
+            ForceAllEnemysToBeDistracted();
+        }
 
+    }
     // Called by enemies when they spot the player
     public void EnterAlertState()
     {
@@ -87,7 +111,26 @@ public class GameController : MonoBehaviour
             }
         }
     }
-
+    public void ForceAllEnemysToBeDistracted()
+    {
+        foreach (var enemy in enemies)
+        {
+            if (enemy != null && !enemy.IsDead)
+            {
+                enemy.ForceDistracted();
+            }
+        }
+    }
+    public void ForceAllCamToBeDesabled()
+    {
+        foreach (var cam in camsInLevel)
+        {
+            if(cam !=null )
+            {
+               cam.DeactivateCam();
+            }
+        }
+    }
     private IEnumerator FadeMusic(bool toAlert)
     {
         if (backgroundMusic == null || alertMusic == null)
@@ -188,6 +231,11 @@ public class GameController : MonoBehaviour
             Quaternion.identity
         );
 
+        AddEnemysTOList();
+        AddCamToList();
+    }
+    void AddEnemysTOList()
+    {
         // Clear old enemies (important when restarting / next level)
         enemies.Clear();
 
@@ -197,10 +245,15 @@ public class GameController : MonoBehaviour
 
         enemies.AddRange(foundEnemies);
 
-       // Debug.Log($"Enemies found in level: {enemies.Count}");
+        // Debug.Log($"Enemies found in level: {enemies.Count}");
     }
+    void AddCamToList()
+    {
+        camsInLevel.Clear();
+        CCTVCam[] foundcams = currentLevel.GetComponentsInChildren<CCTVCam>(true);
 
-
+        camsInLevel.AddRange(foundcams);
+    }
     public void GameOver()
     {
         LeanTween.alpha(fadeImage.rectTransform, 0.5f, 1f).setOnComplete(() => 
