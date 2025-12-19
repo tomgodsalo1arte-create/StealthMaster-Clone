@@ -65,7 +65,6 @@
     <Compile Include="Assets\Scripts\TrapsAndStuff\FieldOfView.cs" />
     <Compile Include="Assets\Scripts\State\State\EnemyAlertState.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\DoorController.cs" />
-    <Compile Include="Assets\PinePie\Simple Joystick\Core\Base\JoystickController.cs" />
     <Compile Include="Assets\Scripts\State\State\EnemyPatrolState.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\EnemyProjectile.cs" />
     <Compile Include="Assets\Scripts\UpgradeManager.cs" />
@@ -76,7 +75,6 @@
     <Compile Include="Assets\Scripts\TrapsAndStuff\ItemSelection.cs" />
     <Compile Include="Assets\Scripts\State\State\EnemyChaseState.cs" />
     <Compile Include="Assets\Scripts\State\State\EnemyDeadState.cs" />
-    <Compile Include="Assets\Scripts\State\State\EnemyWanderState.cs" />
     <Compile Include="Assets\Scripts\State\IState.cs" />
     <Compile Include="Assets\Scripts\EnemyBehaviour.cs" />
     <Compile Include="Assets\Scripts\State\State\EnemyDistractedState.cs" />
@@ -91,7 +89,6 @@
     <Compile Include="Assets\Scripts\CharacterBaseScript.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\CCTVSpotlightTrigger.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\MoneyMagnet.cs" />
-    <Compile Include="Assets\PinePie\Simple Joystick\Examples\demo script\MovementScript.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\CCTvFieldOfView.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\Projectile.cs" />
   </ItemGroup>

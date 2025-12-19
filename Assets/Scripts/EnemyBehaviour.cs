@@ -2,10 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
 using UnityEngine;
 using UnityEngine.AI;
-using Random = UnityEngine.Random;
 
 public class EnemyBehaviour : CharacterBaseScript
 {
@@ -33,7 +31,6 @@ public class EnemyBehaviour : CharacterBaseScript
 
     private bool isDead = false;
     private bool isSeen = false;
-    private int previousIndex;
 
     [SerializeField] private Animation anim;
     [SerializeField] private Animator animtor = null;
@@ -47,7 +44,6 @@ public class EnemyBehaviour : CharacterBaseScript
     [SerializeField] private AudioClip deathClip;
     private bool isInAlert = false;
 
-    private PlayerBehaviour player;
     private NavMeshAgent agent ;
     private StateMachine _stateMachine ;
 

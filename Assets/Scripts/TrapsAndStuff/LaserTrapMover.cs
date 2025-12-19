@@ -19,19 +19,21 @@ public class LaserTrapMover : MonoBehaviour
     {
         while (true)
         {
-            Transform target = goingToB ? pointB : pointA;
+            Vector3 start = goingToB ? pointA.position : pointB.position;
+            Vector3 end = goingToB ? pointB.position : pointA.position;
 
-            while (Vector3.Distance(transform.position, target.position) > 0.01f)
+            float t = 0f;
+
+            while (t < 1f)
             {
-                transform.position = Vector3.MoveTowards(
-                    transform.position,
-                    target.position,
-                    moveSpeed * Time.deltaTime
-                );
+                t += Time.deltaTime * moveSpeed / Vector3.Distance(start, end);
+                transform.position = Vector3.Lerp(start, end, t);
                 yield return null;
             }
 
+            transform.position = end; // snap exactly
             yield return new WaitForSeconds(waitTime);
+
             goingToB = !goingToB;
         }
     }

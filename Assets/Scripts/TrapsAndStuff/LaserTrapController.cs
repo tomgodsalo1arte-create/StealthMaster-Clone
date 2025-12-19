@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
@@ -10,9 +11,17 @@ public class LaserTrapController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private bool rotateLaser = true;
     [SerializeField] private float rotationSpeed = 30f;
-
+    
     private LineRenderer lineRenderer;
-
+    public static event Action OnLaserHit;
+    private void OnEnable()
+    {
+        
+    }
+    private void OnDisable()
+    {
+        
+    }
     void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
@@ -51,15 +60,15 @@ public class LaserTrapController : MonoBehaviour
 
             if (hit.collider.CompareTag("Player"))
             {
-                OnPlayerDetected();
+                OnPlayerHit();
             }
         }
     }
 
-    private void OnPlayerDetected()
+    private void OnPlayerHit()
     {
-        Debug.Log("PLAYER HIT BY LASER!");
-
+        
+        OnLaserHit?.Invoke();
         // Options:
         // - Kill player
         // - Trigger alarm

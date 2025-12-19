@@ -335,11 +335,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelList:
   - {fileID: 2779162059256980220, guid: 3bd49ba01699f374c8a73beb35d2c040, type: 3}
-  - {fileID: 3209717615727711687, guid: 73a641e9cc895444691b709ae2b1a0a2, type: 3}
-  - {fileID: 2779162059256980220, guid: 3bd49ba01699f374c8a73beb35d2c040, type: 3}
-  - {fileID: 7898987271046151264, guid: daf463d1f75bc304693d7ca3b8e18b0f, type: 3}
-  - {fileID: 7898987271046151264, guid: 5470a372ea57b0445ab805d095bf7623, type: 3}
-  upgradeLevel: {fileID: 130294020}
+  upgradeLevel: {fileID: 1828940894}
   inputImage: {fileID: 651019219}
   fadeImage: {fileID: 1040383538}
   player: {fileID: 1281957550}
@@ -551,12 +547,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1 &130294020 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3819918591312264831, guid: 682b2ddcce9100045b8fac80113e449d,
-    type: 3}
-  m_PrefabInstance: {fileID: 1351143419}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &167211487
 GameObject:
   m_ObjectHideFlags: 0
@@ -3567,13 +3557,13 @@ MonoBehaviour:
   dummyBody: {fileID: 1941950940}
   forceToDead: 300
   speed: 5
-  variableJoystick: {fileID: 651019218}
+  variableJoystick: {fileID: 0}
   layerMask:
     serializedVersion: 2
     m_Bits: 257
   shuriken: {fileID: 6644844934470610865, guid: 77ffe1df05faace44bd5d6a264f195d0,
     type: 3}
-  healthBar: {fileID: 437474411}
+  healthBar: {fileID: 0}
   turnSmoothTime: 0.125
   anim: {fileID: 1799014680}
   animtor: {fileID: 0}
@@ -4306,6 +4296,11 @@ PrefabInstance:
     - target: {fileID: 4649217076474038909, guid: cdeaf35d290f2a14c8ede685cfc7b0f5,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6869044098544852848, guid: cdeaf35d290f2a14c8ede685cfc7b0f5,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
