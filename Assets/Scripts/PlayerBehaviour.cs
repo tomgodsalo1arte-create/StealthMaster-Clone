@@ -12,11 +12,11 @@ public class PlayerBehaviour : CharacterBaseScript
     [SerializeField] private HealthBarManager healthBar = default;
     [SerializeField] private float turnSmoothTime = 0.125f;
     [SerializeField] private Animation anim ;
-    [SerializeField] private Animator animtor = null;
+    [SerializeField] public Animator animtor = null;
     public float throwSpeed;
     [HideInInspector] public Vector3 direction;
     public bool hasKey = false;
-    private bool died = false;
+    public bool died = false;
     public static event Action OpenTheDoor;
     private Vector3 enemyPos;
     private float turnSmoothVelocity;
