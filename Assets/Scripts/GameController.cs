@@ -17,6 +17,8 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject gameOverMenu = default;
     [SerializeField] TMP_Text moneyText = default;
     [SerializeField] HealthBarManager healthBar = default;
+    [SerializeField] GameObject joystickObject;
+
     int totalMoneyCount;
     int levelIndex = 0;
     LevelScript currentLevel;
@@ -29,6 +31,7 @@ public class GameController : MonoBehaviour
     [SerializeField] public CCTVCam cctvcam;
     private bool inAlertState = false;
     private Coroutine musicFadeRoutine;
+    private Vector3 playerrpos;
     
     /*[Header("PowerUp")]*/
 
@@ -39,6 +42,9 @@ public class GameController : MonoBehaviour
     {
         Instance = this;
         GetLevel();
+        joystickObject.SetActive(true);
+        playerrpos = player.transform.position;
+
     }
 
     [Header("Enemy PowerUp Settings in Sec")]
@@ -190,15 +196,16 @@ public class GameController : MonoBehaviour
                 moneyMagnet.moneyCount = 0;
                 currentLevel.DisableAllEnemies();
                 player.transform.LookAt(Vector3.forward);
-                upgradeLevel.SetActive(true);
-                LeanTween.alpha(fadeImage.rectTransform, 0, 1f).setOnComplete(() =>
-                {
-                    LeanTween.delayedCall(1f, () =>
+                //upgradeLevel.SetActive(true);
+                //LeanTween.alpha(fadeImage.rectTransform, 0, 1f).setOnComplete(() =>
+                //{
+                    LeanTween.delayedCall(0.5f, () =>
                     {
                         fadeImage.raycastTarget = false;
-                        itemSelectionTab.gameObject.SetActive(true);
+                        //itemSelectionTab.gameObject.SetActive(true);
+                        UpgradeLevelCompleted();
                     });
-                });        
+                //});        
                 
             });
         });
@@ -207,7 +214,7 @@ public class GameController : MonoBehaviour
     public void UpgradeLevelCompleted()
     {
         fadeImage.raycastTarget = true;
-        itemSelectionTab.SetActive(false);
+        //itemSelectionTab.SetActive(false);
         LeanTween.alpha(fadeImage.rectTransform, 1, 1f).setEase(LeanTweenType.easeInCirc).setOnComplete(() =>
         {
             upgradeLevel.SetActive(false);
@@ -258,6 +265,7 @@ public class GameController : MonoBehaviour
     {
         LeanTween.alpha(fadeImage.rectTransform, 0.5f, 1f).setOnComplete(() => 
         {
+            joystickObject.SetActive(false);
             gameOverMenu.SetActive(true);
             fadeImage.gameObject.SetActive(true);
             moneyText.text = moneyMagnet.moneyCount + "";
@@ -268,7 +276,14 @@ public class GameController : MonoBehaviour
     {
         LeanTween.alpha(fadeImage.rectTransform, 1f, 1f).setOnComplete(() => 
         {
+            
+            player.transform.position = playerrpos;
             player.gameObject.SetActive(true);
+            PlayerBehaviour.Instance.died = false;
+            PlayerBehaviour.Instance.animtor.Play("Idle");
+
+
+            joystickObject.SetActive(true);
             healthBar.HealthBarChanged(100);
             moneyMagnet.moneyCount = 0;
             currentLevel.DisableAllEnemies();
