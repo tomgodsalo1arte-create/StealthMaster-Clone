@@ -149,7 +149,7 @@ public class EnemyBehaviour : CharacterBaseScript
     }
     private void Start()
     {
-        _stateMachine.Initialize(_patrolState);
+        _stateMachine.Initialize(_idealState);
     }
     private void Update()
     {
@@ -170,6 +170,7 @@ public class EnemyBehaviour : CharacterBaseScript
     }
     public IEnumerator TurnTowards(Vector3 direction, float turnSpeed)
     {
+        _isTurning = true;
         agent.updateRotation = false;
 
         Quaternion target = Quaternion.LookRotation(direction);
@@ -185,10 +186,11 @@ public class EnemyBehaviour : CharacterBaseScript
         }
 
         agent.updateRotation = true;
+        _isTurning = false;
     }
     public void SetNextWaypointDestination(NavMeshAgent agent)
     {
-        Debug.Log("EnemyBehaviour → SetNextWaypointDestination");
+      //  Debug.Log("EnemyBehaviour → SetNextWaypointDestination");
 
         if (WaypointCount == 0) return;
 
@@ -215,21 +217,25 @@ public class EnemyBehaviour : CharacterBaseScript
 
         Animator.Play("Walking");
     }
-
-
-    [SerializeField] private float lookAngle = 180f;
-    [SerializeField] private float lookRadius = 0.6f;
-
+    [Header("lOOKING aROUND ")]
+    [SerializeField] public float scanInterval = 0.6f;
+    public float _scanTimer;
+    private bool _isScanning;
     private float _baseYaxis;
     private bool _lookInitialized;
     private bool _lookingRight;
+    [SerializeField] private float lookAngle = 90f;   // or 180f
+    [SerializeField] private float turnSpeed = 180f;  // degrees/sec
     public bool _waitingAtWaypoint;
+    private bool _isTurning;
 
-    public void LookSideToSide(NavMeshAgent agent, Transform trns)
+    public void LookSideToSide()
     {
+        if (_isTurning) return;
+
         if (!_lookInitialized)
         {
-            _baseYaxis = trns.eulerAngles.y;
+            _baseYaxis = transform.eulerAngles.y;
             _lookingRight = false;
             _lookInitialized = true;
         }
@@ -240,25 +246,14 @@ public class EnemyBehaviour : CharacterBaseScript
 
         Vector3 lookDir = Quaternion.Euler(0, targetYaw, 0) * Vector3.forward;
 
-        // Very small steering target
-        Vector3 fakeDestination = trns.position + lookDir * lookRadius;
+        StartCoroutine(TurnTowards(lookDir, turnSpeed));
 
-        agent.SetDestination(fakeDestination);
-
-        float angleDelta = Mathf.Abs(Mathf.DeltaAngle(trns.eulerAngles.y, targetYaw));
-        if (angleDelta < 2f)
-        {
-            _lookingRight = !_lookingRight;
-        }
+        _lookingRight = !_lookingRight;
     }
-
-    private void ResetLookNavMesh()
+    /*public void ResetLook()
     {
-        Debug.Log("starting ResetLookNavMesh ");
         _lookInitialized = false;
-    }
-
-
+    }*/
     private void FieldOfViewHandle()
     {
         fieldOfView.SetAimDirection(transform.forward);

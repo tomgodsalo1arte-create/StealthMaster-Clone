@@ -95,9 +95,6 @@ public class EnemyPatrolState : IState
             return;
         }
     }
-
-
-
     public void Exit()
     {
         Debug.Log("Exit PatrolState"); // Stop moving along patrol path

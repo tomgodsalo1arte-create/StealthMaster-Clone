@@ -18,14 +18,32 @@ public class EnemyIdealStaticState : IState
     public void Enter()
     {
         Debug.Log("Entering IdealState");
+
+        _enemy._waitingAtWaypoint = true;
+        _enemy._scanTimer = 0f;
     }   
     public void Update()
     {
-       _enemy.LookSideToSide(_agent, _enemy.transform);
+        //Debug.Log("Updating IdealState");
+        if (_enemy._waitingAtWaypoint)
+        {
+            _enemy._scanTimer += Time.deltaTime;
+
+            if (_enemy._scanTimer >= _enemy.scanInterval)
+            {
+                _enemy._scanTimer = 0f;
+              //_enemy.ResetLook();
+                _enemy.LookSideToSide();
+            }
+        }
+
+
+
+        //  _enemy.LookSideToSide(_agent, _enemy.transform);
     }
     public void Exit()
     {
-        throw new System.NotImplementedException();
+      //  throw new System.NotImplementedException();
     }
 
 }

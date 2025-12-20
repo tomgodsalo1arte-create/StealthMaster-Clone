@@ -6672,6 +6672,11 @@ PrefabInstance:
       objectReference: {fileID: 5569377259796272965}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
+      propertyPath: turnSpeed
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 6573484393615419649}
@@ -8572,6 +8577,16 @@ PrefabInstance:
       objectReference: {fileID: 8677231173229030450}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
+      propertyPath: lookAngle
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
+      propertyPath: turnSpeed
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 7933202762770010742}
@@ -10346,6 +10361,16 @@ PrefabInstance:
       objectReference: {fileID: 1293611698117316485}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
+      propertyPath: lookAngle
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
+      propertyPath: turnSpeed
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 540439488721875393}
@@ -10793,6 +10818,16 @@ PrefabInstance:
       propertyPath: animtor
       value: 
       objectReference: {fileID: 1872449938170517699}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
+      propertyPath: lookAngle
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
+      propertyPath: turnSpeed
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
       propertyPath: waypoints
