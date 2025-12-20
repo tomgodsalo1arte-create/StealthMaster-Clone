@@ -24,7 +24,7 @@ public class EnemyPatrolState : IState
 
     public void Enter()
     {
-        Debug.Log("Enter PatrolState");
+     // Debug.Log("Enter PatrolState");
         // If there are no waypoints, just idle
         if (_enemy.WaypointCount == 0)
         {
@@ -50,7 +50,7 @@ public class EnemyPatrolState : IState
     {
         if (_enemy.IsDead) return;
         if (_enemy.WaypointCount == 0) return;
-        Debug.Log("Update PatrolState");
+      //  Debug.Log("Update PatrolState");
         // If we're still calculating a path, do nothing
         if (_agent.pathPending)
             return;

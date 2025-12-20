@@ -2,10 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml;
 using UnityEngine;
 using UnityEngine.AI;
-using Random = UnityEngine.Random;
 
 public class EnemyBehaviour : CharacterBaseScript
 {
@@ -33,7 +31,6 @@ public class EnemyBehaviour : CharacterBaseScript
 
     private bool isDead = false;
     private bool isSeen = false;
-    private int previousIndex;
 
     [SerializeField] private Animation anim;
     [SerializeField] private Animator animtor = null;
@@ -47,14 +44,6 @@ public class EnemyBehaviour : CharacterBaseScript
     [SerializeField] private AudioClip deathClip;
     private bool isInAlert = false;
 
-
-  /*  [Header("PowerUp Settings")]
-    [SerializeField] private float distractedDuration = 15f;
-    [SerializeField] private float distractedCooldown = 120f;*/
-    /*public float DistractedDuration => distractedDuration;
-    public float DistractedCooldown => distractedCooldown;*/
-
-    private PlayerBehaviour player;
     private NavMeshAgent agent ;
     private StateMachine _stateMachine ;
 
