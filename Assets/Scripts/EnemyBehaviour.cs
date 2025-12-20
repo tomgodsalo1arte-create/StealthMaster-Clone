@@ -26,6 +26,9 @@ public class EnemyBehaviour : CharacterBaseScript
     private bool _isCooldown = false;
     [SerializeField] private GameObject shuriken = default;
     [SerializeField] private float throwSpeed = default;
+    //
+  /*  private int _currentWaypointIndex = -1;*/
+    public Vector3 targetPos;
 
     private RaycastHit hit;
 
@@ -57,9 +60,10 @@ public class EnemyBehaviour : CharacterBaseScript
     private EnemyChaseState _chaseState;
     private EnemyDeadState  _deadState;
     private EnemyDistractedState  _distractedState;
-
+    private EnemyIdealStaticState _idealState;
 
     public int WaypointCount => waypointList?.Count ?? 0;
+   
 
     public Vector3 GetWaypointPosition(int index)
     {
@@ -94,6 +98,7 @@ public class EnemyBehaviour : CharacterBaseScript
     public float AlertWalkSpeed => alertWalkSpeed;
     public Animator Animator => animtor;
 
+  //  public int CurrentWaypointIndex { get => _currentWaypointIndex; set => _currentWaypointIndex = value; }
 
     private void OnEnable()
     {
@@ -136,10 +141,10 @@ public class EnemyBehaviour : CharacterBaseScript
         _deadState = new EnemyDeadState(this, _stateMachine, agent);
         _alertState = new EnemyAlertState(this, _stateMachine, agent);
         _distractedState = new EnemyDistractedState(this, _stateMachine, agent);
-
+        _idealState = new EnemyIdealStaticState(this, _stateMachine, agent);
         //anim.Play("AttackIdle");
         //animtor.Play("Idle");
-      // StartCoroutine(EnemyAI()); // set in patrolState ----------------------------------------------------  Done
+        // StartCoroutine(EnemyAI()); // set in patrolState ----------------------------------------------------  Done
     }
     private void Start()
     {
@@ -162,6 +167,114 @@ public class EnemyBehaviour : CharacterBaseScript
         Debug.Log("(hit.collider.CompareTag(\"Dead\")--Inside FoundDeadEnemy");
         SwitchToPatrolFromAlert();
     }
+    public IEnumerator TurnTowards(Vector3 direction, float turnSpeed)
+    {
+        agent.updateRotation = false;
+
+        Quaternion target = Quaternion.LookRotation(direction);
+
+        while (Quaternion.Angle(transform.rotation, target) > 1f)
+        {
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                target,
+                turnSpeed * Time.deltaTime
+            );
+            yield return null;
+        }
+
+        agent.updateRotation = true;
+    }
+   /* public void SetNextWaypointDestination(Vector3 targetPos, bool isStopped )
+    {
+        Debug.Log("starting SetNextWaypointDestination & _enemy.WaypointCount== " + WaypointCount);
+        if (WaypointCount == 0) return;
+
+        int nextIndex = _currentWaypointIndex;
+
+        // Choose a new index that’s not the same as the current one
+        if (WaypointCount == 1)
+        {
+            nextIndex = 0;
+        }
+        else
+        {
+            while (nextIndex == _currentWaypointIndex)
+            {
+                nextIndex = UnityEngine.Random.Range(0, WaypointCount);
+            }
+        }
+
+        _currentWaypointIndex = nextIndex;
+
+        targetPos = GetWaypointPosition(_currentWaypointIndex);
+        isStopped = false;
+
+        //Vector3 dir = (targetPos - _agent.transform.position).normalized;
+        //Vector3 lookPoint = _agent.transform.position + dir * 0.5f;
+        //  _enemy.TurnAround(targetPos, 1f);
+        //_agent.SetDestination(lookPoint);
+        agent.SetDestination(targetPos);
+
+        Animator.Play("Walking");
+
+        // Make the enemy face the waypoint (optional, NavMeshAgent will also rotate)
+        //   _enemy.transform.LookAt(new Vector3(targetPos.x, _enemy.transform.position.y, targetPos.z));
+    }*/
+    //public void TurnAround(Vector3 direction, float turnSpeed)
+    //{
+    //    agent.updateRotation = false;
+
+    //    Quaternion target = Quaternion.LookRotation(direction);
+    //    transform.rotation = Quaternion.RotateTowards(
+    //        transform.rotation,
+    //        target,
+    //        turnSpeed * Time.deltaTime
+    //    );
+    //    agent.updateRotation = true;
+    //}
+
+    [SerializeField] private float lookAngle = 180f;
+    [SerializeField] private float lookRadius = 0.6f;
+
+    private float _baseYaxis;
+    private bool _lookInitialized;
+    private bool _lookingRight;
+    public bool _waitingAtWaypoint;
+
+    public void LookSideToSide(NavMeshAgent agent, Transform trns)
+    {
+        if (!_lookInitialized)
+        {
+            _baseYaxis = trns.eulerAngles.y;
+            _lookingRight = false;
+            _lookInitialized = true;
+        }
+
+        float targetYaw = _lookingRight
+            ? _baseYaxis + lookAngle
+            : _baseYaxis - lookAngle;
+
+        Vector3 lookDir = Quaternion.Euler(0, targetYaw, 0) * Vector3.forward;
+
+        // Very small steering target
+        Vector3 fakeDestination = trns.position + lookDir * lookRadius;
+
+        agent.SetDestination(fakeDestination);
+
+        float angleDelta = Mathf.Abs(Mathf.DeltaAngle(trns.eulerAngles.y, targetYaw));
+        if (angleDelta < 2f)
+        {
+            _lookingRight = !_lookingRight;
+        }
+    }
+
+    private void ResetLookNavMesh()
+    {
+        Debug.Log("starting ResetLookNavMesh ");
+        _lookInitialized = false;
+    }
+
 
     private void FieldOfViewHandle()
     {

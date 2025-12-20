@@ -1,6 +1,7 @@
 using Assets.Scripts.State;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.GraphicsBuffer;
 
 public class EnemyPatrolState : IState
 {
@@ -12,7 +13,7 @@ public class EnemyPatrolState : IState
     private int _currentWaypointIndex = -1;
     private float _waitTimer;
     private const float WaitAtPointTime = 1f; // how long to idle at each waypoint
-
+    private Vector3 targetPos;
     public LTDescr LookAroundLTD { get; private set; }
 
     public EnemyPatrolState(EnemyBehaviour enemy, StateMachine machine, NavMeshAgent agent)
@@ -24,7 +25,7 @@ public class EnemyPatrolState : IState
 
     public void Enter()
     {
-     // Debug.Log("Enter PatrolState");
+     Debug.Log("Enter PatrolState");
         // If there are no waypoints, just idle
         if (_enemy.WaypointCount == 0)
         {
@@ -50,34 +51,44 @@ public class EnemyPatrolState : IState
     {
         if (_enemy.IsDead) return;
         if (_enemy.WaypointCount == 0) return;
-      //  Debug.Log("Update PatrolState");
-        // If we're still calculating a path, do nothing
-        if (_agent.pathPending)
-            return;
+        if (_agent.pathPending) return;
 
-        // Has the enemy reached the waypoint?
-        if (_agent.remainingDistance <= _agent.stoppingDistance + 0.05f)
+        // 1. Arrival detection (ONCE)
+        if (!_enemy._waitingAtWaypoint &&
+            _agent.remainingDistance <= _agent.stoppingDistance + 0.05f)
         {
-            _agent.isStopped = true;
+            _enemy._waitingAtWaypoint = true;
+            _waitTimer = 0f;
+            _agent.speed = 0.01f;
+           // _enemy.Animator.Play("Idle");
 
-            // Idle on this point for a bit
+            SetNextWaypointDestination();
+
+            // TURN AROUND / FACE FORWARD TO the Destination 
+            _enemy.StartCoroutine(  _enemy.TurnTowards(targetPos, 180f)  );
+
+        }
+
+        // 2. Waiting + scanning
+        if (_enemy._waitingAtWaypoint)
+        {
             _waitTimer += Time.deltaTime;
+          // _enemy.LookSideToSide(_agent, _enemy.transform);
+
             if (_waitTimer >= WaitAtPointTime)
             {
-                // _enemy.Animator.Play("Idle");
-                _enemy.Animator.Play("Walking");
+                _enemy._waitingAtWaypoint = false;
                 _waitTimer = 0f;
-               LookAround();
-                // Move to another random waypoint (different to current)
-             
-                  //SetNextWaypointDestination();
+
+               // ResetLookNavMesh();
+                _agent.speed = _enemy.PatrolSpeed;
+               
             }
-        }
-        else
-        {
-            _agent.isStopped = false;
+
+            return;
         }
     }
+
     private void LookAround()  // this is not done--------------------need to change full to code based look agound----------------------------------------------------
     {
         float angle = Random.Range(0, 2) == 0 ? -45 : 45;
@@ -110,6 +121,7 @@ public class EnemyPatrolState : IState
 
     private void SetNextWaypointDestination()
     {
+        Debug.Log("starting SetNextWaypointDestination & _enemy.WaypointCount== "+ _enemy.WaypointCount);
         if (_enemy.WaypointCount == 0) return;
 
         int nextIndex = _currentWaypointIndex;
@@ -129,11 +141,18 @@ public class EnemyPatrolState : IState
 
         _currentWaypointIndex = nextIndex;
 
-        Vector3 targetPos = _enemy.GetWaypointPosition(_currentWaypointIndex);
+        targetPos = _enemy.GetWaypointPosition(_currentWaypointIndex);
         _agent.isStopped = false;
-        _agent.SetDestination(targetPos);
+
+        //Vector3 dir = (targetPos - _agent.transform.position).normalized;
+        //Vector3 lookPoint = _agent.transform.position + dir * 0.5f;
+      //  _enemy.TurnAround(targetPos, 1f);
+        //_agent.SetDestination(lookPoint);
+        _agent.SetDestination(targetPos );
+
+        _enemy.Animator.Play("Walking");
 
         // Make the enemy face the waypoint (optional, NavMeshAgent will also rotate)
-        _enemy.transform.LookAt(new Vector3(targetPos.x, _enemy.transform.position.y, targetPos.z));
+        //   _enemy.transform.LookAt(new Vector3(targetPos.x, _enemy.transform.position.y, targetPos.z));
     }
 }
