@@ -27,7 +27,7 @@ public class EnemyBehaviour : CharacterBaseScript
     [SerializeField] private GameObject shuriken = default;
     [SerializeField] private float throwSpeed = default;
     //
-  /*  private int _currentWaypointIndex = -1;*/
+
     public Vector3 targetPos;
 
     private RaycastHit hit;
@@ -98,7 +98,8 @@ public class EnemyBehaviour : CharacterBaseScript
     public float AlertWalkSpeed => alertWalkSpeed;
     public Animator Animator => animtor;
 
-  //  public int CurrentWaypointIndex { get => _currentWaypointIndex; set => _currentWaypointIndex = value; }
+    private int _currentWaypointIndex = -1;
+    public Vector3 CurrentWaypointTarget { get; private set; }
 
     private void OnEnable()
     {
@@ -185,14 +186,14 @@ public class EnemyBehaviour : CharacterBaseScript
 
         agent.updateRotation = true;
     }
-   /* public void SetNextWaypointDestination(Vector3 targetPos, bool isStopped )
+    public void SetNextWaypointDestination(NavMeshAgent agent)
     {
-        Debug.Log("starting SetNextWaypointDestination & _enemy.WaypointCount== " + WaypointCount);
+        Debug.Log("EnemyBehaviour → SetNextWaypointDestination");
+
         if (WaypointCount == 0) return;
 
         int nextIndex = _currentWaypointIndex;
 
-        // Choose a new index that’s not the same as the current one
         if (WaypointCount == 1)
         {
             nextIndex = 0;
@@ -207,32 +208,14 @@ public class EnemyBehaviour : CharacterBaseScript
 
         _currentWaypointIndex = nextIndex;
 
-        targetPos = GetWaypointPosition(_currentWaypointIndex);
-        isStopped = false;
+        CurrentWaypointTarget = GetWaypointPosition(_currentWaypointIndex);
 
-        //Vector3 dir = (targetPos - _agent.transform.position).normalized;
-        //Vector3 lookPoint = _agent.transform.position + dir * 0.5f;
-        //  _enemy.TurnAround(targetPos, 1f);
-        //_agent.SetDestination(lookPoint);
-        agent.SetDestination(targetPos);
+        agent.isStopped = false;
+        agent.SetDestination(CurrentWaypointTarget);
 
         Animator.Play("Walking");
+    }
 
-        // Make the enemy face the waypoint (optional, NavMeshAgent will also rotate)
-        //   _enemy.transform.LookAt(new Vector3(targetPos.x, _enemy.transform.position.y, targetPos.z));
-    }*/
-    //public void TurnAround(Vector3 direction, float turnSpeed)
-    //{
-    //    agent.updateRotation = false;
-
-    //    Quaternion target = Quaternion.LookRotation(direction);
-    //    transform.rotation = Quaternion.RotateTowards(
-    //        transform.rotation,
-    //        target,
-    //        turnSpeed * Time.deltaTime
-    //    );
-    //    agent.updateRotation = true;
-    //}
 
     [SerializeField] private float lookAngle = 180f;
     [SerializeField] private float lookRadius = 0.6f;
