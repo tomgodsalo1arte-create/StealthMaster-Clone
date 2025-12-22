@@ -26,6 +26,7 @@ public class EnemyBehaviour : CharacterBaseScript
     private bool _isCooldown = false;
     [SerializeField] private GameObject shuriken = default;
     [SerializeField] private float throwSpeed = default;
+    //
 
     public Vector3 targetPos;
 
@@ -49,7 +50,7 @@ public class EnemyBehaviour : CharacterBaseScript
     private NavMeshAgent agent ;
     private StateMachine _stateMachine ;
 
-    // [SerializeField] private float distractedCooldown = 120f; // 2 minutes
+     // [SerializeField] private float distractedCooldown = 120f; // 2 minutes
      private float _lastDistractedTime = -Mathf.Infinity;
 
     // We'll keep references to states so we don't keep "new"ing them.
@@ -60,8 +61,10 @@ public class EnemyBehaviour : CharacterBaseScript
     private EnemyDeadState  _deadState;
     private EnemyDistractedState  _distractedState;
     private EnemyIdealStaticState _idealState;
+
     public int WaypointCount => waypointList?.Count ?? 0;
    
+
     public Vector3 GetWaypointPosition(int index)
     {
         if (waypointList == null || index < 0 || index >= waypointList.Count)
@@ -146,7 +149,7 @@ public class EnemyBehaviour : CharacterBaseScript
     }
     private void Start()
     {
-        _stateMachine.Initialize(_patrolState);
+        _stateMachine.Initialize(_idealState);
     }
     private void Update()
     {
@@ -156,7 +159,10 @@ public class EnemyBehaviour : CharacterBaseScript
             return;
 
         FieldOfViewHandle();
+
+      
     }
+
     private void FoundDeadEnemy(Transform transform)
     {
         Debug.Log("(hit.collider.CompareTag(\"Dead\")--Inside FoundDeadEnemy");
@@ -198,10 +204,10 @@ public class EnemyBehaviour : CharacterBaseScript
         {
             while (nextIndex == _currentWaypointIndex)
             {
-                // nextIndex = UnityEngine.Random.Range(0, WaypointCount);
-                nextIndex = _currentWaypointIndex++;
+                nextIndex = UnityEngine.Random.Range(0, WaypointCount);
             }
         }
+
         _currentWaypointIndex = nextIndex;
 
         CurrentWaypointTarget = GetWaypointPosition(_currentWaypointIndex);
@@ -211,7 +217,7 @@ public class EnemyBehaviour : CharacterBaseScript
 
         Animator.Play("Walking");
     }
-    [Header("LOOKING AROUND ")]
+    [Header("lOOKING aROUND ")]
     [SerializeField] public float scanInterval = 0.6f;
     public float _scanTimer;
     private bool _isScanning;
@@ -309,6 +315,7 @@ public class EnemyBehaviour : CharacterBaseScript
         //  _stateMachine.TransitionTo(_chaseState);
       
     }
+
     public void Attack()
     {
         if (!_isCooldown)

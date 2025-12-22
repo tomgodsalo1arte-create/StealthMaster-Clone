@@ -10,6 +10,4 @@ public class CharacterBaseScript : MonoBehaviour
     public float forceToDead;
     public float speed = 5;
 
-
-
 }
