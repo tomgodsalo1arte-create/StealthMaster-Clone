@@ -48,7 +48,7 @@ public class EnemyBehaviour : CharacterBaseScript
     private bool isInAlert = false;
 
     private NavMeshAgent agent ;
-    private StateMachine _stateMachine ;
+    public StateMachine _stateMachine ;
 
      // [SerializeField] private float distractedCooldown = 120f; // 2 minutes
      private float _lastDistractedTime = -Mathf.Infinity;
@@ -61,6 +61,9 @@ public class EnemyBehaviour : CharacterBaseScript
     private EnemyDeadState  _deadState;
     private EnemyDistractedState  _distractedState;
     private EnemyIdealStaticState _idealState;
+    [Header("Set EnemyBehavior")]
+    [SerializeField]
+    private EnemyStartState startState = EnemyStartState.Idle;
 
     public int WaypointCount => waypointList?.Count ?? 0;
    
@@ -100,7 +103,13 @@ public class EnemyBehaviour : CharacterBaseScript
 
     private int _currentWaypointIndex = -1;
     public Vector3 CurrentWaypointTarget { get; private set; }
-
+    public enum EnemyStartState
+    {
+        Idle,
+        Patrol,
+        Alert,
+        Chase
+    }
     private void OnEnable()
     {
         if (fieldOfView != null)
@@ -149,7 +158,25 @@ public class EnemyBehaviour : CharacterBaseScript
     }
     private void Start()
     {
-        _stateMachine.Initialize(_idealState);
+        //_stateMachine.Initialize(_idealState);
+        switch (startState)
+        {
+            case EnemyStartState.Idle:
+                _stateMachine.Initialize(_idealState);
+                break;
+
+            case EnemyStartState.Patrol:
+                _stateMachine.Initialize(_patrolState);
+                break;
+
+            case EnemyStartState.Alert:
+                _stateMachine.Initialize(_alertState);
+                break;
+
+            case EnemyStartState.Chase:
+                _stateMachine.Initialize(_chaseState);
+                break;
+        }
     }
     private void Update()
     {
@@ -359,6 +386,23 @@ public class EnemyBehaviour : CharacterBaseScript
         }
         return Time.time >= _lastDistractedTime + GameController.Instance.DistractedCooldown;
     }
+    public void ForceState(EnemyStartState state)
+    {
+        switch (state)
+        {
+            case EnemyStartState.Idle:
+                _stateMachine.TransitionTo(_idealState);
+                break;
+            case EnemyStartState.Patrol:
+                _stateMachine.TransitionTo(_patrolState);
+                break;
+            case EnemyStartState.Alert:
+                _stateMachine.TransitionTo(_alertState);
+                break;
+        }
+    }
+
+
     public void MarkDistractedUsed()
     {
         _lastDistractedTime = Time.time;

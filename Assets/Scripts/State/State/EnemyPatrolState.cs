@@ -108,35 +108,5 @@ public class EnemyPatrolState : IState
         _enemy.Animator.Play("Idle");
     }
 
-   /* private void SetNextWaypointDestination()
-    {
-        Debug.Log("starting SetNextWaypointDestination & _enemy.WaypointCount== "+ _enemy.WaypointCount);
-        if (_enemy.WaypointCount == 0) return;
-
-        int nextIndex = _currentWaypointIndex;
-
-        // Choose a new index that’s not the same as the current one
-        if (_enemy.WaypointCount == 1)
-        {
-            nextIndex = 0;
-        }
-        else
-        {
-            while (nextIndex == _currentWaypointIndex)
-            {
-                nextIndex = Random.Range(0, _enemy.WaypointCount);
-            }
-        }
-
-        _currentWaypointIndex = nextIndex;
-
-        targetPos = _enemy.GetWaypointPosition(_currentWaypointIndex);
-        _agent.isStopped = false;
-
-        
-        _agent.SetDestination(targetPos );
-
-        _enemy.Animator.Play("Walking");
-
-    }*/
+   
 }

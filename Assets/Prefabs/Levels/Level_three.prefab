@@ -8049,6 +8049,11 @@ PrefabInstance:
       objectReference: {fileID: 8873389947468703462}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
+      propertyPath: startState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
       propertyPath: fieldOfView
       value: 
       objectReference: {fileID: 7469678435195939238}
@@ -10374,6 +10379,11 @@ PrefabInstance:
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 540439488721875393}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
+      propertyPath: startState
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
       propertyPath: fieldOfView
