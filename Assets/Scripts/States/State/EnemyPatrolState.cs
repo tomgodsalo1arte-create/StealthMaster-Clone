@@ -59,7 +59,7 @@ public class EnemyPatrolState : IState
         {
            // Debug.Log("[Patrol] Arrived at waypoint");
 
-            _enemy._waitingAtWaypoint = true;
+           // _enemy._waitingAtWaypoint = true;
             _waitTimer = 0f;
 
             _agent.isStopped = true;      // STOP movement
@@ -107,36 +107,4 @@ public class EnemyPatrolState : IState
         // Back to idle when leaving 
         _enemy.Animator.Play("Idle");
     }
-
-   /* private void SetNextWaypointDestination()
-    {
-        Debug.Log("starting SetNextWaypointDestination & _enemy.WaypointCount== "+ _enemy.WaypointCount);
-        if (_enemy.WaypointCount == 0) return;
-
-        int nextIndex = _currentWaypointIndex;
-
-        // Choose a new index that’s not the same as the current one
-        if (_enemy.WaypointCount == 1)
-        {
-            nextIndex = 0;
-        }
-        else
-        {
-            while (nextIndex == _currentWaypointIndex)
-            {
-                nextIndex = Random.Range(0, _enemy.WaypointCount);
-            }
-        }
-
-        _currentWaypointIndex = nextIndex;
-
-        targetPos = _enemy.GetWaypointPosition(_currentWaypointIndex);
-        _agent.isStopped = false;
-
-        
-        _agent.SetDestination(targetPos );
-
-        _enemy.Animator.Play("Walking");
-
-    }*/
 }

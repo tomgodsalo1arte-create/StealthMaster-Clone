@@ -62,34 +62,36 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\States\IState.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\FieldOfView.cs" />
-    <Compile Include="Assets\Scripts\State\State\EnemyAlertState.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\DoorController.cs" />
-    <Compile Include="Assets\Scripts\State\State\EnemyPatrolState.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\EnemyProjectile.cs" />
     <Compile Include="Assets\Scripts\UpgradeManager.cs" />
     <Compile Include="Assets\Scripts\Waypoint.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\CCTVCam.cs" />
-    <Compile Include="Assets\Scripts\State\State\EnemyAttackState.cs" />
-    <Compile Include="Assets\Scripts\State\StateMachine.cs" />
-    <Compile Include="Assets\Scripts\State\State\EnemyIdealStaticState.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\ItemSelection.cs" />
-    <Compile Include="Assets\Scripts\State\State\EnemyChaseState.cs" />
-    <Compile Include="Assets\Scripts\State\State\EnemyDeadState.cs" />
-    <Compile Include="Assets\Scripts\State\IState.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObjects\MiniBossData.cs" />
+    <Compile Include="Assets\Scripts\States\State\EnemyAlertState.cs" />
     <Compile Include="Assets\Scripts\EnemyBehaviour.cs" />
-    <Compile Include="Assets\Scripts\State\State\EnemyDistractedState.cs" />
+    <Compile Include="Assets\Scripts\States\State\EnemyChaseState.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\LaserTrapController.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
+    <Compile Include="Assets\Scripts\States\State\EnemyIdealStaticState.cs" />
     <Compile Include="Assets\Scripts\LevelScript.cs" />
     <Compile Include="Assets\Scripts\CountdownTimer.cs" />
     <Compile Include="Assets\Scripts\KeyBehaviour.cs" />
+    <Compile Include="Assets\Scripts\States\StateMachine.cs" />
     <Compile Include="Assets\Scripts\PlayerBehaviour.cs" />
+    <Compile Include="Assets\Scripts\MiniBossController.cs" />
+    <Compile Include="Assets\Scripts\States\State\EnemyAttackState.cs" />
+    <Compile Include="Assets\Scripts\States\State\EnemyDeadState.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\LaserTrapMover.cs" />
+    <Compile Include="Assets\Scripts\States\State\EnemyDistractedState.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\HealthBarManager.cs" />
     <Compile Include="Assets\Scripts\CharacterBaseScript.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\CCTVSpotlightTrigger.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\MoneyMagnet.cs" />
+    <Compile Include="Assets\Scripts\States\State\EnemyPatrolState.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\CCTvFieldOfView.cs" />
     <Compile Include="Assets\Scripts\TrapsAndStuff\Projectile.cs" />
   </ItemGroup>
