@@ -342,12 +342,12 @@ MonoBehaviour:
   - {fileID: 7898987271046151264, guid: c8efeded994a8884289f81110437cec0, type: 3}
   - {fileID: 7898987271046151264, guid: c89545cfcce1ca640bf8b6b5f1d0177a, type: 3}
   upgradeLevel: {fileID: 130294020}
-  inputImage: {fileID: 0}
-  fadeImage: {fileID: 0}
+  inputImage: {fileID: 280014645}
+  fadeImage: {fileID: 758218815}
   player: {fileID: 1281957550}
-  itemSelectionTab: {fileID: 0}
+  itemSelectionTab: {fileID: 2141182202}
   moneyMagnet: {fileID: 1927554282}
-  gameOverMenu: {fileID: 0}
+  gameOverMenu: {fileID: 1139166235}
   moneyText: {fileID: 280014641}
   healthBar: {fileID: 866327314}
   joystickObject: {fileID: 280014640}
@@ -887,6 +887,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a47f546fc70ec8428172694e78e4288, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &280014645 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7358069925200792704, guid: bd079ae248a4d9040afd92f2e4a6e41c,
+    type: 3}
+  m_PrefabInstance: {fileID: 280014639}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 280014640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &433306594
@@ -1435,6 +1447,18 @@ Transform:
   - {fileID: 868112846}
   m_Father: {fileID: 861601672}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &758218815 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4243767468167402942, guid: bd079ae248a4d9040afd92f2e4a6e41c,
+    type: 3}
+  m_PrefabInstance: {fileID: 280014639}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &861601671
 GameObject:
   m_ObjectHideFlags: 0
@@ -1710,7 +1734,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 280014639}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2141182202}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7bcb51a39f270a048823eecc0329e867, type: 3}
@@ -1882,6 +1906,12 @@ Transform:
   - {fileID: 1042052300}
   m_Father: {fileID: 212750974}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1139166235 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5600408776564787158, guid: bd079ae248a4d9040afd92f2e4a6e41c,
+    type: 3}
+  m_PrefabInstance: {fileID: 280014639}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1145438127
 GameObject:
   m_ObjectHideFlags: 0
@@ -2341,6 +2371,11 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 963194228}
+    - target: {fileID: 7663490827558016057, guid: 9ff1ec3b96b06c44587d3616c8cd6c44,
+        type: 3}
+      propertyPath: currentHealth
+      value: 1421.8
+      objectReference: {fileID: 0}
     - target: {fileID: 8581781733085798771, guid: 9ff1ec3b96b06c44587d3616c8cd6c44,
         type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -4010,6 +4045,12 @@ Transform:
   - {fileID: 582860545}
   m_Father: {fileID: 1134862519}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2141182202 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9038115134681230392, guid: bd079ae248a4d9040afd92f2e4a6e41c,
+    type: 3}
+  m_PrefabInstance: {fileID: 280014639}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5411680173173371
 Transform:
   m_ObjectHideFlags: 0
