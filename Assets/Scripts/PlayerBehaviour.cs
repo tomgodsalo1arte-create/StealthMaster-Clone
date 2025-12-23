@@ -33,7 +33,6 @@ public class PlayerBehaviour : CharacterBaseScript
     private void Awake()
     {
         Instance = this;
-        LaserTrapController.OnLaserHit += GotShotbylaser;
         EnemyProjectile.GotHit += GotShot;
         healthBar.HealthReachedZero += Died;
         rigidBody = GetComponent<Rigidbody>();
@@ -122,15 +121,6 @@ public class PlayerBehaviour : CharacterBaseScript
     {
         healthBar.HealthBarChanged(-5);
         CameraShaker.Instance.ShakeOnce(4.5f, 14f, 0f, 0.25f);
-
-        if (audioSource != null && gotHitClip != null)
-            audioSource.PlayOneShot(gotHitClip);
-
-    }
-    private void GotShotbylaser()
-    {
-        healthBar.HealthBarChanged(-0.1f);
-        CameraShaker.Instance.ShakeOnce(0.5f, 4f, 0f, 0.25f);
 
         if (audioSource != null && gotHitClip != null)
             audioSource.PlayOneShot(gotHitClip);
