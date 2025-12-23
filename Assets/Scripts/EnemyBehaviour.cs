@@ -2,8 +2,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class EnemyBehaviour : CharacterBaseScript
 {
@@ -26,14 +28,12 @@ public class EnemyBehaviour : CharacterBaseScript
     private bool _isCooldown = false;
     [SerializeField] private GameObject shuriken = default;
     [SerializeField] private float throwSpeed = default;
-    //
-
-    public Vector3 targetPos;
 
     private RaycastHit hit;
 
     private bool isDead = false;
     private bool isSeen = false;
+    private int previousIndex;
 
     [SerializeField] private Animation anim;
     [SerializeField] private Animator animtor = null;
@@ -47,8 +47,16 @@ public class EnemyBehaviour : CharacterBaseScript
     [SerializeField] private AudioClip deathClip;
     private bool isInAlert = false;
 
+
+  /*  [Header("PowerUp Settings")]
+    [SerializeField] private float distractedDuration = 15f;
+    [SerializeField] private float distractedCooldown = 120f;*/
+    /*public float DistractedDuration => distractedDuration;
+    public float DistractedCooldown => distractedCooldown;*/
+
+    private PlayerBehaviour player;
     private NavMeshAgent agent ;
-    public StateMachine _stateMachine ;
+    private StateMachine _stateMachine ;
 
      // [SerializeField] private float distractedCooldown = 120f; // 2 minutes
      private float _lastDistractedTime = -Mathf.Infinity;
@@ -60,13 +68,9 @@ public class EnemyBehaviour : CharacterBaseScript
     private EnemyChaseState _chaseState;
     private EnemyDeadState  _deadState;
     private EnemyDistractedState  _distractedState;
-    private EnemyIdealStaticState _idealState;
-    [Header("Set EnemyBehavior")]
-    [SerializeField]
-    private EnemyStartState startState = EnemyStartState.Idle;
+
 
     public int WaypointCount => waypointList?.Count ?? 0;
-   
 
     public Vector3 GetWaypointPosition(int index)
     {
@@ -101,15 +105,7 @@ public class EnemyBehaviour : CharacterBaseScript
     public float AlertWalkSpeed => alertWalkSpeed;
     public Animator Animator => animtor;
 
-    private int _currentWaypointIndex = -1;
-    public Vector3 CurrentWaypointTarget { get; private set; }
-    public enum EnemyStartState
-    {
-        Idle,
-        Patrol,
-        Alert,
-        Chase
-    }
+
     private void OnEnable()
     {
         if (fieldOfView != null)
@@ -151,32 +147,14 @@ public class EnemyBehaviour : CharacterBaseScript
         _deadState = new EnemyDeadState(this, _stateMachine, agent);
         _alertState = new EnemyAlertState(this, _stateMachine, agent);
         _distractedState = new EnemyDistractedState(this, _stateMachine, agent);
-        _idealState = new EnemyIdealStaticState(this, _stateMachine, agent);
+
         //anim.Play("AttackIdle");
         //animtor.Play("Idle");
-        // StartCoroutine(EnemyAI()); // set in patrolState ----------------------------------------------------  Done
+      // StartCoroutine(EnemyAI()); // set in patrolState ----------------------------------------------------  Done
     }
     private void Start()
     {
-        //_stateMachine.Initialize(_idealState);
-        switch (startState)
-        {
-            case EnemyStartState.Idle:
-                _stateMachine.Initialize(_idealState);
-                break;
-
-            case EnemyStartState.Patrol:
-                _stateMachine.Initialize(_patrolState);
-                break;
-
-            case EnemyStartState.Alert:
-                _stateMachine.Initialize(_alertState);
-                break;
-
-            case EnemyStartState.Chase:
-                _stateMachine.Initialize(_chaseState);
-                break;
-        }
+        _stateMachine.Initialize(_patrolState);
     }
     private void Update()
     {
@@ -195,92 +173,7 @@ public class EnemyBehaviour : CharacterBaseScript
         Debug.Log("(hit.collider.CompareTag(\"Dead\")--Inside FoundDeadEnemy");
         SwitchToPatrolFromAlert();
     }
-    public IEnumerator TurnTowards(Vector3 direction, float turnSpeed)
-    {
-        _isTurning = true;
-        agent.updateRotation = false;
 
-        Quaternion target = Quaternion.LookRotation(direction);
-
-        while (Quaternion.Angle(transform.rotation, target) > 1f)
-        {
-            transform.rotation = Quaternion.RotateTowards(
-                transform.rotation,
-                target,
-                turnSpeed * Time.deltaTime
-            );
-            yield return null;
-        }
-
-        agent.updateRotation = true;
-        _isTurning = false;
-    }
-    public void SetNextWaypointDestination(NavMeshAgent agent)
-    {
-      //  Debug.Log("EnemyBehaviour → SetNextWaypointDestination");
-
-        if (WaypointCount == 0) return;
-
-        int nextIndex = _currentWaypointIndex;
-
-        if (WaypointCount == 1)
-        {
-            nextIndex = 0;
-        }
-        else
-        {
-            while (nextIndex == _currentWaypointIndex)
-            {
-                nextIndex = UnityEngine.Random.Range(0, WaypointCount);
-            }
-        }
-
-        _currentWaypointIndex = nextIndex;
-
-        CurrentWaypointTarget = GetWaypointPosition(_currentWaypointIndex);
-
-        agent.isStopped = false;
-        agent.SetDestination(CurrentWaypointTarget);
-
-        Animator.Play("Walking");
-    }
-    [Header("lOOKING aROUND ")]
-    [SerializeField] public float scanInterval = 0.6f;
-    public float _scanTimer;
-    private bool _isScanning;
-    private float _baseYaxis;
-    private bool _lookInitialized;
-    private bool _lookingRight;
-    [SerializeField] private float lookAngle = 90f;   // or 180f
-    [SerializeField] private float turnSpeed = 180f;  // degrees/sec
-    public bool _waitingAtWaypoint;
-    private bool _isTurning;
-
-    public void LookSideToSide()
-    {
-        if (_isTurning) return;
-
-        if (!_lookInitialized)
-        {
-            _baseYaxis = transform.eulerAngles.y;
-            _lookingRight = false;
-            _lookInitialized = true;
-        }
-
-        float targetYaw = _lookingRight
-            ? _baseYaxis + lookAngle
-            : _baseYaxis - lookAngle;
-
-        Vector3 lookDir = Quaternion.Euler(0, targetYaw, 0) * Vector3.forward;
-
-        StartCoroutine(TurnTowards(lookDir, turnSpeed));
-
-        _lookingRight = !_lookingRight;
-    }
-    /*public void ResetLook()
-    {
-        _lookInitialized = false;
-    }*/
     private void FieldOfViewHandle()
     {
         fieldOfView.SetAimDirection(transform.forward);
@@ -386,23 +279,6 @@ public class EnemyBehaviour : CharacterBaseScript
         }
         return Time.time >= _lastDistractedTime + GameController.Instance.DistractedCooldown;
     }
-    public void ForceState(EnemyStartState state)
-    {
-        switch (state)
-        {
-            case EnemyStartState.Idle:
-                _stateMachine.TransitionTo(_idealState);
-                break;
-            case EnemyStartState.Patrol:
-                _stateMachine.TransitionTo(_patrolState);
-                break;
-            case EnemyStartState.Alert:
-                _stateMachine.TransitionTo(_alertState);
-                break;
-        }
-    }
-
-
     public void MarkDistractedUsed()
     {
         _lastDistractedTime = Time.time;
