@@ -5510,6 +5510,11 @@ PrefabInstance:
       objectReference: {fileID: 5104616953262216985}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
+      propertyPath: turnSpeed
+      value: 87.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 5811029129879841117}
@@ -5888,6 +5893,11 @@ PrefabInstance:
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 6695852460655493001}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
+      propertyPath: startState
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
       propertyPath: fieldOfView
@@ -6992,6 +7002,11 @@ PrefabInstance:
       propertyPath: animtor
       value: 
       objectReference: {fileID: 5893706333513367062}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
+      propertyPath: turnSpeed
+      value: 91.6
+      objectReference: {fileID: 0}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
       propertyPath: waypoints
@@ -9636,6 +9651,11 @@ PrefabInstance:
       objectReference: {fileID: 2973041834345203616}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
+      propertyPath: turnSpeed
+      value: 91
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 4553578949183764964}
@@ -10135,6 +10155,11 @@ PrefabInstance:
       propertyPath: waypoints
       value: 
       objectReference: {fileID: 4037354972073048279}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
+      propertyPath: startState
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
       propertyPath: fieldOfView

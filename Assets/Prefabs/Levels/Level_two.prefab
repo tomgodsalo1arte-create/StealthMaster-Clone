@@ -6747,6 +6747,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
+      propertyPath: startState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
       propertyPath: fieldOfView
       value: 
       objectReference: {fileID: 6673333796226134897}
@@ -6940,6 +6945,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
+      propertyPath: turnSpeed
+      value: 174.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
       propertyPath: fieldOfView
       value: 
       objectReference: {fileID: 6012316590912183223}
@@ -7125,6 +7135,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
+        type: 3}
+      propertyPath: turnSpeed
+      value: 90.8
       objectReference: {fileID: 0}
     - target: {fileID: 7404291475908750971, guid: 5d87ce2d6c7115c4d9d9d9eb66b65385,
         type: 3}
