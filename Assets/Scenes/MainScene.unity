@@ -1874,10 +1874,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2026906735478722999, guid: c8efeded994a8884289f81110437cec0,
+        type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 23800000, guid: e5d92d9ec3fdc5043a89bc5c020f80e6,
+        type: 2}
     - target: {fileID: 2704294045539417301, guid: c8efeded994a8884289f81110437cec0,
         type: 3}
       propertyPath: m_Name
       value: Level_six
+      objectReference: {fileID: 0}
+    - target: {fileID: 2704294045539417301, guid: c8efeded994a8884289f81110437cec0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
