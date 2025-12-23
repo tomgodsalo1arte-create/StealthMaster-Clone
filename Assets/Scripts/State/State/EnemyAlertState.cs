@@ -43,7 +43,7 @@ public class EnemyAlertState : IState
         _agent.ResetPath();
 
         // Idle anim
-        _enemy.Animator.Play("Idle");
+        _enemy.Animator.Play("Walking");
     }
     public void Update()
     {
