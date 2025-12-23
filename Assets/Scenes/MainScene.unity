@@ -305,7 +305,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &129464396
 Transform:
   m_ObjectHideFlags: 0
@@ -350,7 +350,7 @@ MonoBehaviour:
   gameOverMenu: {fileID: 1195909177}
   moneyText: {fileID: 921643947}
   healthBar: {fileID: 866327314}
-  joystickObject: {fileID: 0}
+  joystickObject: {fileID: 1790238988}
   backgroundMusic: {fileID: 129464399}
   alertMusic: {fileID: 129464398}
   musicFadeTime: 0.5
@@ -1240,7 +1240,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 62996944004537976}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1790238988}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a47f546fc70ec8428172694e78e4288, type: 3}
@@ -1252,7 +1252,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 62996944004537976}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1790238988}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -3408,6 +3408,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1761091935}
   m_Mesh: {fileID: 0}
+--- !u!1 &1790238988 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8195980628984408300, guid: cb837b99f9a44764084d068e6ce1015c,
+    type: 3}
+  m_PrefabInstance: {fileID: 62996944004537976}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1799014679
 GameObject:
   m_ObjectHideFlags: 0
@@ -11174,6 +11180,7 @@ MonoBehaviour:
   shuriken: {fileID: 6644844934470610865, guid: 0573399fab083154492a3e5bd165c793,
     type: 3}
   throwSpeed: 15
+  targetPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 6270167959843998725, guid: 2b7153467278a8c49961e9ca5107810e, type: 3}
   animtor: {fileID: 4251429042575040944}
   audioSource: {fileID: 8600381585159950817}
@@ -11181,10 +11188,16 @@ MonoBehaviour:
   gotHitClip: {fileID: 8300000, guid: 824663e677717f94a9b6027720ff38dc, type: 3}
   throwClip: {fileID: 8300000, guid: 862bf844c5297e24ca0323bda25333fa, type: 3}
   deathClip: {fileID: 8300000, guid: 55c98abfa76e4fd43bc5012b67b1127a, type: 3}
+  startState: 0
   PatrolSpeed: 1.5
   alertStandTime: 1
   maxHuntTime: 10
   alertWalkSpeed: 2
+  scanInterval: 0.6
+  _scanTimer: 0
+  lookAngle: 90
+  turnSpeed: 180
+  _waitingAtWaypoint: 0
 --- !u!1 &2317996308853509145
 GameObject:
   m_ObjectHideFlags: 0
@@ -11757,6 +11770,7 @@ MonoBehaviour:
   shuriken: {fileID: 6644844934470610865, guid: 0573399fab083154492a3e5bd165c793,
     type: 3}
   throwSpeed: 15
+  targetPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 6270167959843998725, guid: 2b7153467278a8c49961e9ca5107810e, type: 3}
   animtor: {fileID: 433215832143063691}
   audioSource: {fileID: 5357518622502001370}
@@ -11764,10 +11778,16 @@ MonoBehaviour:
   gotHitClip: {fileID: 8300000, guid: 824663e677717f94a9b6027720ff38dc, type: 3}
   throwClip: {fileID: 8300000, guid: 862bf844c5297e24ca0323bda25333fa, type: 3}
   deathClip: {fileID: 8300000, guid: 55c98abfa76e4fd43bc5012b67b1127a, type: 3}
+  startState: 0
   PatrolSpeed: 1.5
   alertStandTime: 1
   maxHuntTime: 10
   alertWalkSpeed: 2
+  scanInterval: 0.6
+  _scanTimer: 0
+  lookAngle: 90
+  turnSpeed: 180
+  _waitingAtWaypoint: 0
 --- !u!4 &2530638656482963269
 Transform:
   m_ObjectHideFlags: 0
@@ -12042,6 +12062,7 @@ MonoBehaviour:
   shuriken: {fileID: 6644844934470610865, guid: 0573399fab083154492a3e5bd165c793,
     type: 3}
   throwSpeed: 15
+  targetPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 6270167959843998725, guid: 2b7153467278a8c49961e9ca5107810e, type: 3}
   animtor: {fileID: 55395639779199848}
   audioSource: {fileID: 5520959346526583609}
@@ -12049,10 +12070,16 @@ MonoBehaviour:
   gotHitClip: {fileID: 8300000, guid: 824663e677717f94a9b6027720ff38dc, type: 3}
   throwClip: {fileID: 8300000, guid: 862bf844c5297e24ca0323bda25333fa, type: 3}
   deathClip: {fileID: 8300000, guid: 55c98abfa76e4fd43bc5012b67b1127a, type: 3}
+  startState: 0
   PatrolSpeed: 1.5
   alertStandTime: 1
   maxHuntTime: 10
   alertWalkSpeed: 2
+  scanInterval: 0.6
+  _scanTimer: 0
+  lookAngle: 90
+  turnSpeed: 180
+  _waitingAtWaypoint: 0
 --- !u!65 &2608803264400426059
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13037,6 +13064,7 @@ MonoBehaviour:
   shuriken: {fileID: 6644844934470610865, guid: 0573399fab083154492a3e5bd165c793,
     type: 3}
   throwSpeed: 15
+  targetPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 6270167959843998725, guid: 2b7153467278a8c49961e9ca5107810e, type: 3}
   animtor: {fileID: 953424651160037415}
   audioSource: {fileID: 4711209307671976054}
@@ -13044,10 +13072,16 @@ MonoBehaviour:
   gotHitClip: {fileID: 8300000, guid: 824663e677717f94a9b6027720ff38dc, type: 3}
   throwClip: {fileID: 8300000, guid: 862bf844c5297e24ca0323bda25333fa, type: 3}
   deathClip: {fileID: 8300000, guid: 55c98abfa76e4fd43bc5012b67b1127a, type: 3}
+  startState: 0
   PatrolSpeed: 1.5
   alertStandTime: 1
   maxHuntTime: 10
   alertWalkSpeed: 2
+  scanInterval: 0.6
+  _scanTimer: 0
+  lookAngle: 90
+  turnSpeed: 180
+  _waitingAtWaypoint: 0
 --- !u!114 &3025989254348619669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25812,6 +25846,7 @@ MonoBehaviour:
   shuriken: {fileID: 6644844934470610865, guid: 0573399fab083154492a3e5bd165c793,
     type: 3}
   throwSpeed: 15
+  targetPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 6270167959843998725, guid: 2b7153467278a8c49961e9ca5107810e, type: 3}
   animtor: {fileID: 5269347161173858731}
   audioSource: {fileID: 394863347621227002}
@@ -25819,10 +25854,16 @@ MonoBehaviour:
   gotHitClip: {fileID: 8300000, guid: 824663e677717f94a9b6027720ff38dc, type: 3}
   throwClip: {fileID: 8300000, guid: 862bf844c5297e24ca0323bda25333fa, type: 3}
   deathClip: {fileID: 8300000, guid: 55c98abfa76e4fd43bc5012b67b1127a, type: 3}
+  startState: 0
   PatrolSpeed: 1.5
   alertStandTime: 1
   maxHuntTime: 10
   alertWalkSpeed: 2
+  scanInterval: 0.6
+  _scanTimer: 0
+  lookAngle: 90
+  turnSpeed: 180
+  _waitingAtWaypoint: 0
 --- !u!54 &7942996576861361641
 Rigidbody:
   m_ObjectHideFlags: 0

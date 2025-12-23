@@ -863,6 +863,7 @@ MonoBehaviour:
   shuriken: {fileID: 6644844934470610865, guid: 0573399fab083154492a3e5bd165c793,
     type: 3}
   throwSpeed: 15
+  targetPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 6270167959843998725, guid: 2b7153467278a8c49961e9ca5107810e, type: 3}
   animtor: {fileID: 8841856858453644918}
   audioSource: {fileID: 1065205466255284082}
@@ -870,10 +871,16 @@ MonoBehaviour:
   gotHitClip: {fileID: 8300000, guid: 824663e677717f94a9b6027720ff38dc, type: 3}
   throwClip: {fileID: 8300000, guid: 862bf844c5297e24ca0323bda25333fa, type: 3}
   deathClip: {fileID: 8300000, guid: 55c98abfa76e4fd43bc5012b67b1127a, type: 3}
+  startState: 1
   PatrolSpeed: 1.5
   alertStandTime: 1
   maxHuntTime: 10
   alertWalkSpeed: 2
+  scanInterval: 0.6
+  _scanTimer: 0
+  lookAngle: 90
+  turnSpeed: 180
+  _waitingAtWaypoint: 0
 --- !u!82 &1065205466255284082
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3245,6 +3252,7 @@ MonoBehaviour:
   shuriken: {fileID: 6644844934470610865, guid: 0573399fab083154492a3e5bd165c793,
     type: 3}
   throwSpeed: 15
+  targetPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 6270167959843998725, guid: 2b7153467278a8c49961e9ca5107810e, type: 3}
   animtor: {fileID: 7558925630811909575}
   audioSource: {fileID: 8669292924170391704}
@@ -3252,10 +3260,16 @@ MonoBehaviour:
   gotHitClip: {fileID: 8300000, guid: 824663e677717f94a9b6027720ff38dc, type: 3}
   throwClip: {fileID: 8300000, guid: 862bf844c5297e24ca0323bda25333fa, type: 3}
   deathClip: {fileID: 8300000, guid: 55c98abfa76e4fd43bc5012b67b1127a, type: 3}
+  startState: 0
   PatrolSpeed: 1.5
   alertStandTime: 1
   maxHuntTime: 10
   alertWalkSpeed: 2
+  scanInterval: 0.6
+  _scanTimer: 0
+  lookAngle: 90
+  turnSpeed: 180
+  _waitingAtWaypoint: 0
 --- !u!82 &8669292924170391704
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5980,7 +5994,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.06666667
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: a9bb65f1c6e310646a5393f3b5c05fde, type: 2}
   m_BuildHeightMesh: 0
@@ -9645,6 +9659,7 @@ MonoBehaviour:
   shuriken: {fileID: 6644844934470610865, guid: 0573399fab083154492a3e5bd165c793,
     type: 3}
   throwSpeed: 15
+  targetPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 6270167959843998725, guid: 2b7153467278a8c49961e9ca5107810e, type: 3}
   animtor: {fileID: 2133773282709917792}
   audioSource: {fileID: 6007261736444462493}
@@ -9652,10 +9667,16 @@ MonoBehaviour:
   gotHitClip: {fileID: 8300000, guid: 824663e677717f94a9b6027720ff38dc, type: 3}
   throwClip: {fileID: 8300000, guid: 862bf844c5297e24ca0323bda25333fa, type: 3}
   deathClip: {fileID: 8300000, guid: 55c98abfa76e4fd43bc5012b67b1127a, type: 3}
+  startState: 0
   PatrolSpeed: 1.5
   alertStandTime: 1
   maxHuntTime: 10
   alertWalkSpeed: 2
+  scanInterval: 0.6
+  _scanTimer: 0
+  lookAngle: 90
+  turnSpeed: 180
+  _waitingAtWaypoint: 0
 --- !u!195 &3508863139842570379
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -11026,6 +11047,7 @@ MonoBehaviour:
   shuriken: {fileID: 6644844934470610865, guid: 0573399fab083154492a3e5bd165c793,
     type: 3}
   throwSpeed: 15
+  targetPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 6270167959843998725, guid: 2b7153467278a8c49961e9ca5107810e, type: 3}
   animtor: {fileID: 6240359705188914201}
   audioSource: {fileID: 5710103415022525475}
@@ -11033,10 +11055,16 @@ MonoBehaviour:
   gotHitClip: {fileID: 8300000, guid: 824663e677717f94a9b6027720ff38dc, type: 3}
   throwClip: {fileID: 8300000, guid: 862bf844c5297e24ca0323bda25333fa, type: 3}
   deathClip: {fileID: 8300000, guid: 55c98abfa76e4fd43bc5012b67b1127a, type: 3}
+  startState: 0
   PatrolSpeed: 1.5
   alertStandTime: 1
   maxHuntTime: 10
   alertWalkSpeed: 2
+  scanInterval: 0.6
+  _scanTimer: 0
+  lookAngle: 90
+  turnSpeed: 180
+  _waitingAtWaypoint: 0
 --- !u!82 &5710103415022525475
 AudioSource:
   m_ObjectHideFlags: 0
@@ -21270,6 +21298,7 @@ MonoBehaviour:
   shuriken: {fileID: 6644844934470610865, guid: 0573399fab083154492a3e5bd165c793,
     type: 3}
   throwSpeed: 15
+  targetPos: {x: 0, y: 0, z: 0}
   anim: {fileID: 6270167959843998725, guid: 2b7153467278a8c49961e9ca5107810e, type: 3}
   animtor: {fileID: 2917629907096575314}
   audioSource: {fileID: 6793461266331699440}
@@ -21277,10 +21306,16 @@ MonoBehaviour:
   gotHitClip: {fileID: 8300000, guid: 824663e677717f94a9b6027720ff38dc, type: 3}
   throwClip: {fileID: 8300000, guid: 862bf844c5297e24ca0323bda25333fa, type: 3}
   deathClip: {fileID: 8300000, guid: 55c98abfa76e4fd43bc5012b67b1127a, type: 3}
-  PatrolSpeed: 1.5
+  startState: 0
+  PatrolSpeed: 1.05
   alertStandTime: 1
   maxHuntTime: 10
   alertWalkSpeed: 2
+  scanInterval: 0.6
+  _scanTimer: 0
+  lookAngle: 90
+  turnSpeed: 90
+  _waitingAtWaypoint: 0
 --- !u!82 &6793461266331699440
 AudioSource:
   m_ObjectHideFlags: 0
