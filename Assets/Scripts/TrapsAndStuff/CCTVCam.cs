@@ -19,8 +19,12 @@ public class CCTVCam : MonoBehaviour
     [SerializeField] private float pauseTime = 0.5f;      // pause at ends
 
     [SerializeField] public CCTVSpotlightTrigger Spotlight;
-    private float _startY;
     private float _targetY;
+    private float _startX;
+    private float _startY;
+    private float _currentOffsetY;
+
+
     private float _pauseTimer;
     private int _direction = 1; // 1 = right, -1 = left
     private void OnEnable()
@@ -41,12 +45,20 @@ public class CCTVCam : MonoBehaviour
     }
     void Start()
     {
-         controller = GameController.Instance;
+        controller = GameController.Instance;
 
-        //for cam rotation
-        _startY = CamObject.transform.eulerAngles.y;
-        _targetY = _startY + rotationAngle * 0.5f;
+        Vector3 startEuler = CamObject.transform.localEulerAngles;
+
+        _startX = startEuler.x;
+        _startY = startEuler.y;
+
+        // normalize X
+        if (_startX > 180f) _startX -= 360f;
+
+        _currentOffsetY = -rotationAngle * 0.5f;
     }
+
+
 
     private void Update()
     {
@@ -56,34 +68,37 @@ public class CCTVCam : MonoBehaviour
         }
       
     }
- 
+
     public void RotateCam()
     {
-         if (_pauseTimer > 0f)
+        if (_pauseTimer > 0f)
         {
             _pauseTimer -= Time.deltaTime;
             return;
         }
 
-        float currentY = CamObject.transform.eulerAngles.y;
-        float step = rotationSpeed * Time.deltaTime * _direction;
+        _currentOffsetY += rotationSpeed * Time.deltaTime * _direction;
 
-        float nextY = currentY + step;
+        float halfAngle = rotationAngle * 0.5f;
 
-        // Check if we reached or passed the target
-        if ((_direction > 0 && nextY >= _targetY) ||
-            (_direction < 0 && nextY <= _targetY))
+        if (_currentOffsetY >= halfAngle)
         {
-            nextY = _targetY;
-            _direction *= -1;
-
-            _targetY = _startY + (_direction * rotationAngle * 0.5f);
+            _currentOffsetY = halfAngle;
+            _direction = -1;
+            _pauseTimer = pauseTime;
+        }
+        else if (_currentOffsetY <= -halfAngle)
+        {
+            _currentOffsetY = -halfAngle;
+            _direction = 1;
             _pauseTimer = pauseTime;
         }
 
-        CamObject.transform.rotation = Quaternion.Euler(25f, nextY, 0f);
-    
+        CamObject.transform.localRotation =
+            Quaternion.Euler(_startX, _startY + _currentOffsetY, 0f);
     }
+
+
     public void EnemysToAlert(Transform trans)
     {
        // Debug.Log("CCTV detected in EnemysToAlert CCTV class – alerting all enemies");
